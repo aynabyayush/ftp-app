@@ -88,7 +88,7 @@ Turn your Android phone into an FTP server to access mobile storage from PCs, Ma
    * Tap the **Grid / List View Toggle** button in the top bar to switch between structured lists and visual icon grids.
    * Use the **Sort** menu to order directory listings by **Name**, **Size**, or **Date Modified**.
 2. **Downloading Files from Server**:
-   * Tap on any file in the explorer or tap the 3-dot options menu and select **Download**.
+   * Tap on any file in the explorer to download the file.
    * Choose your local target directory (configured under settings or selected on-the-fly).
    * If a file with the same name already exists locally, an overwrite prompt will appear asking to **Overwrite**, **Skip**, or **Cancel**.
 3. **Uploading Files to Server**:
@@ -130,7 +130,7 @@ Automate background synchronization between local device folders and remote FTP 
      * *Custom (Minutes)* (enter your preferred interval)
    * Toggle **Enable Auto-Backup** and tap **Save Profile**.
 2. **Monitoring the Sync Engine**:
-   * Tap **Sync Monitor** to view active sync passes, synced file tallies, remaining transfer payloads, and speed metrics.
+   * Tap **Sync Monitor** on the top right corner of the home screen to view active sync passes, synced file tallies, remaining transfer payloads, and speed metrics.
    * Background syncing relies on the `RealtimeSyncService`. Ensure battery optimization exemptions are allowed if running sync unattended with the screen turned off.
 
 ---
@@ -144,6 +144,8 @@ Automate background synchronization between local device folders and remote FTP 
    * Long-press or tap the 3-dot menu on any file/folder to:
      * **Move / Copy**: Select a destination directory and move/duplicate files.
      * **Rename / Delete**: Safely modify
+     * **Directly transmit to FTP Server**: Directly transmit to any of the online saved FTP Address.
+     * **Compress**: Can compress folder into 'zip'.   
 
 ## Tech Stack & Libraries
 
