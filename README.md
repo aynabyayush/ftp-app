@@ -35,6 +35,117 @@ A modern, high-performance Android utility combining a full-featured **FTP Clien
 
 ---
 
+## Complete Usage Guide
+
+### 1. Setting Up and Hosting the Local FTP Server
+
+Turn your Android phone into an FTP server to access mobile storage from PCs, Macs, TVs, or other phones on the same local network.
+
+1. **Initial Server Setup**:
+   * Open **FTPApp** and access the **Server Settings** (gear icon on the server card).
+   * **Listening Port**: Set the port (default: `2121`).
+   * **Passive Port Range**: Configure the passive range (e.g., `50000-50100`) for seamless client connections behind firewalls/routers.
+   * **Shared Directory**: Tap **Browse** to select the root folder exposed over FTP (defaults to root internal storage `/storage/emulated/0`).
+   * **Authentication**: Configure a **Username** and **Password**, or check **Anonymous Login** to allow unauthenticated read/write access.
+2. **Starting the Daemon**:
+   * Connect your phone to Wi-Fi or turn on your Personal Hotspot.
+   * Tap **Initialize Server** / **Toggle Server**.
+   * The status card will transition to **ONLINE** and display your access URL:
+     ```text
+     ftp://<Device-IP-Address>:<Port>
+     Example: ftp://192.168.1.15:2121
+     ```
+3. **Connecting from an External Client (PC/Mac)**:
+   * Open Windows File Explorer, macOS Finder (Cmd + K), FileZilla, or Cyberduck.
+   * Enter the server URL, port, and credentials.
+   * Manage files freely over the local network.
+4. **Stopping the Server**:
+   * Tap **Stop Server** in the app or tap the **Stop** action directly from the persistent Android system notification shade.
+
+---
+
+### 2. Managing Saved FTP Servers & Connecting as a Client
+
+1. **Adding an FTP Server**:
+   * On the main screen under **Saved Servers**, tap the **+** (Add) button.
+   * Enter the connection details:
+     * **Server Alias**: A friendly name (e.g., `Home NAS`, `Office Server`).
+     * **Server IP / Host**: Enter the target hostname or IP address.
+     * **Port**: Enter the server port (typically `21` for standard FTP or custom ports like `2121`).
+     * **Credentials**: Enter username and password, or toggle **Anonymous**.
+   * *(Optional)* Use the integrated **Cyber Keyboard** popup for rapid numeric and IP address entry.
+   * Tap **Save Server**.
+2. **Connecting to a Target Server**:
+   * Tap any saved server entry in your list.
+   * The app pings the host, verifies credentials, and opens the **Remote File Explorer**.
+
+---
+
+### 3. Remote File Explorer & Transfers
+
+1. **Navigating Remote Directories**:
+   * Tap folders to navigate down the hierarchy.
+   * Tap the **Folder Up** arrow icon or use the breadcrumb bar to return to parent directories.
+   * Tap the **Grid / List View Toggle** button in the top bar to switch between structured lists and visual icon grids.
+   * Use the **Sort** menu to order directory listings by **Name**, **Size**, or **Date Modified**.
+2. **Downloading Files from Server**:
+   * Tap on any file in the explorer or tap the 3-dot options menu and select **Download**.
+   * Choose your local target directory (configured under settings or selected on-the-fly).
+   * If a file with the same name already exists locally, an overwrite prompt will appear asking to **Overwrite**, **Skip**, or **Cancel**.
+3. **Uploading Files to Server**:
+   * Navigate to your desired remote folder.
+   * Tap the **Upload** button (`+` or upload icon) in the bottom navigation.
+   * The local storage picker will open. Select your target local file to initiate the upload.
+
+---
+
+### 4. Queue Management & Transfer Monitoring
+
+1. **Live Transfer Status**:
+   * Tap the **Active Transfers** icon in the toolbar.
+   * Monitor real-time performance metrics:
+     * Active file name and transfer direction (Upload / Download).
+     * Current transfer throughput (`MB/s` or `KB/s`).
+     * Transferred bytes vs. Total file size.
+     * Progress bar with estimated remaining bytes.
+2. **Transfer Cancellation**:
+   * Tap the red **Cancel** button next to any running item to abort the socket stream immediately without corrupting local index tables.
+3. **Completed Sessions**:
+   * Review all files downloaded or uploaded during the current session under the **Completed Transfers** sub-tab.
+
+---
+
+### 5. Automated Backups & Real-Time Directory Sync
+
+Automate background synchronization between local device folders and remote FTP paths.
+
+1. **Creating a Backup Profile**:
+   * Open the side drawer and select **Backup & Sync**.
+   * Tap **Add Profile** and select your target saved FTP server.
+   * **Source Directory**: Tap **Browse Local Folder** to pick the phone directory to monitor (e.g., `/DCIM/Camera` or `/Documents`).
+   * **Destination Directory**: Tap **Browse Remote Folder** to choose where the files should be stored on the server.
+   * **Sync Frequency**: Choose how often the engine checks for changes:
+     * *Every 15 Minutes*
+     * *Every 1 Hour*
+     * *Daily*
+     * *Custom (Minutes)* (enter your preferred interval)
+   * Toggle **Enable Auto-Backup** and tap **Save Profile**.
+2. **Monitoring the Sync Engine**:
+   * Tap **Sync Monitor** to view active sync passes, synced file tallies, remaining transfer payloads, and speed metrics.
+   * Background syncing relies on the `RealtimeSyncService`. Ensure battery optimization exemptions are allowed if running sync unattended with the screen turned off.
+
+---
+
+### 6. Local File Manager & ZIP Archiving
+
+1. **Managing Internal & External Storage**:
+   * Open the **Local File Manager** from the side drawer or action menu.
+   * Tap **Storage Volumes** to switch between **Internal Storage** and any mounted **External MicroSD Cards**.
+2. **File & Folder Operations**:
+   * Long-press or tap the 3-dot menu on any file/folder to:
+     * **Move / Copy**: Select a destination directory and move/duplicate files.
+     * **Rename / Delete**: Safely modify
+
 ## Tech Stack & Libraries
 
 * **Language**: Kotlin
