@@ -43,7 +43,7 @@ Turn your Android phone into an FTP server to access mobile storage from PCs, Ma
 
 1. **Initial Server Setup**:
    * Open **FTPApp** and access the **Server Settings** (gear icon on the server card).
-   * **Listening Port**: Set the port (default: `2121`).
+   * **Listening Port**: Set the port (default: `2221`).
    * **Passive Port Range**: Configure the passive range (e.g., `50000-50100`) for seamless client connections behind firewalls/routers.
    * **Shared Directory**: Tap **Browse** to select the root folder exposed over FTP (defaults to root internal storage `/storage/emulated/0`).
    * **Authentication**: Configure a **Username** and **Password**, or check **Anonymous Login** to allow unauthenticated read/write access.
