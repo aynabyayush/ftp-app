@@ -153,7 +153,7 @@ Automate background synchronization between local device folders and remote FTP 
 
 | Home Interface | Realtime Sync | FTP File Manager | Local File Manager |
 | :---: | :---: | :---: | :---: |
-| <img src="https://i.ibb.co/qLvQnwK3/HOMESCREEN.jpg" width="220" alt="Server Interface" /> | <img src="https://i.ibb.co/FbqhXHvZ/IMG-20261010-173321.jpg" width="220" alt="Remote Explorer" /> | <img src="https://i.ibb.co/BHJ4PFPq/IMG-20261010-173338.jpg" width="220" alt="Transfer Queue" /> | <img src="https://i.ibb.co/RGn2N9f8/IMG-20261010-172925.jpg" width="220" alt="Local File Manager" /> |
+| <img src="https://ibb.co/JW9JdPVw" width="220" alt="Server Interface" /> | <img src="https://i.ibb.co/FbqhXHvZ/IMG-20261010-173321.jpg" width="220" alt="Remote Explorer" /> | <img src="https://i.ibb.co/BHJ4PFPq/IMG-20261010-173338.jpg" width="220" alt="Transfer Queue" /> | <img src="https://i.ibb.co/RGn2N9f8/IMG-20261010-172925.jpg" width="220" alt="Local File Manager" /> |
 
 ## Tech Stack & Libraries
 
