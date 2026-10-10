@@ -147,13 +147,6 @@ Automate background synchronization between local device folders and remote FTP 
      * **Directly transmit to FTP Server**: Directly transmit to any of the online saved FTP Address.
      * **Compress**: Can compress folder into 'zip'.
 
-### 7. Screenshots
-
-https://i.ibb.co/yB6W8w0H/IMG-20261010-173422.jpg
-https://i.ibb.co/BHJ4PFPq/IMG-20261010-173338.jpg
-https://i.ibb.co/RGn2N9f8/IMG-20261010-172925.jpg
-https://i.ibb.co/FbqhXHvZ/IMG-20261010-173321.jpg
-
 ## Tech Stack & Libraries
 
 * **Language**: Kotlin
