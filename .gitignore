@@ -13,3 +13,57 @@
 .externalNativeBuild
 .cxx
 local.properties
+# Built Binaries & Build Output
+build/
+*/build/
+bin/
+gen/
+out/
+app/build/
+*.apk
+*.ap_
+*.aab
+*.dex
+
+# Gradle files & caches
+.gradle/
+buildOutputCleanup/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# Local Configuration & SDK paths (NEVER commit this)
+local.properties
+
+# Keystores & Signing Keys (NEVER commit private keys)
+*.jks
+*.keystore
+*.key
+signing.properties
+
+# Android Studio / IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+
+# NDK & Native Builds (if applicable)
+.cxx/
+.externalNativeBuild/
+obj/
+
+# Profiler & Log captures
+captures/
+*.log
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
