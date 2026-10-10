@@ -29,7 +29,7 @@ A modern, high-performance Android utility combining a full-featured **FTP Clien
 * **Archive Utility**: Built-in ZIP compression engine to package directories directly on device before transfer.
 * **External Sharing**: Native Android share sheet integration to push files to other applications or directly to saved FTP endpoints.
 
-### 5. Cyber & Glassmorphic UI
+### 5. Cyber Themed UI
 * Clean interface supporting Material You dynamic theming and custom Cyber/Glassmorphic accents.
 * Custom Cyber Keyboard utility for terminal-style credential and port input.
 
@@ -73,7 +73,6 @@ Turn your Android phone into an FTP server to access mobile storage from PCs, Ma
      * **Server IP / Host**: Enter the target hostname or IP address.
      * **Port**: Enter the server port (typically `21` for standard FTP or custom ports like `2121`).
      * **Credentials**: Enter username and password, or toggle **Anonymous**.
-   * *(Optional)* Use the integrated **Cyber Keyboard** popup for rapid numeric and IP address entry.
    * Tap **Save Server**.
 2. **Connecting to a Target Server**:
    * Tap any saved server entry in your list.
