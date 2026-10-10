@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/glass_input_bg"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:layout_marginBottom="6dp">
+
+    <TextView
+        android:id="@+id/tvStatusBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/hologram_status_bg"
+        android:paddingHorizontal="6dp"
+        android:paddingVertical="2dp"
+        android:text="✔ COMPLETED"
+        android:textColor="#00FF66"
+        android:textSize="10sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvSessionFileName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="file_name.pdf"
+            android:textColor="#E0F7FF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:ellipsize="end"
+            android:singleLine="true" />
+
+        <TextView
+            android:id="@+id/tvSessionDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="12.5 MB • 14:30:15"
+            android:textColor="#80C5DE"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/btnDeleteSessionFile"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/glass_input_bg"
+        android:contentDescription="Delete File"
+        android:padding="6dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_trash"
+        android:layout_marginStart="6dp" />
+</LinearLayout>

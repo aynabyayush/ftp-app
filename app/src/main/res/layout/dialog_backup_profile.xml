@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/drawer_bg"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- HEADER -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/tvBackupProfileTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.08"
+                android:text="REALTIME AUTO-SYNC PROFILE"
+                android:textColor="#00F0FF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- LOCAL FOLDER TO SYNC -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Local Folder to Sync"
+            android:textColor="#00F0FF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <EditText
+                android:id="@+id/etBackupFolderPath"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/glass_input_bg"
+                android:hint="/storage/emulated/0/Download/FTPApp"
+                android:focusable="false"
+                android:clickable="true"
+                android:cursorVisible="false"
+                android:inputType="none"
+                android:autofillHints=""
+                android:textColor="#E0F7FF"
+                android:textColorHint="#6600F0FF"
+                android:paddingHorizontal="12dp"
+                android:textSize="13sp"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnBrowseBackupFolder"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="@drawable/glass_btn_secondary_bg"
+                android:text="@string/browse_folder"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="12dp" />
+        </LinearLayout>
+
+        <!-- REMOTE TARGET FOLDER -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remote Target Folder on FTP Server"
+            android:textColor="#00F0FF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <EditText
+                android:id="@+id/etRemoteBackupFolderPath"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/glass_input_bg"
+                android:hint="/ (Remote Root or Path)"
+                android:inputType="text"
+                android:autofillHints=""
+                android:textColor="#E0F7FF"
+                android:textColorHint="#6600F0FF"
+                android:paddingHorizontal="12dp"
+                android:textSize="13sp"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnBrowseRemoteFolder"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="@drawable/glass_btn_secondary_bg"
+                android:text="@string/browse_folder"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="12dp" />
+        </LinearLayout>
+
+        <!-- AUTO SYNC CHECKBOX -->
+        <CheckBox
+            android:id="@+id/chkAutoBackup"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/glass_input_bg"
+            android:text="Enable Realtime Auto Sync"
+            android:textColor="#E0F7FF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:buttonTint="#00F0FF"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- SYNC FREQUENCY SECTION -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SYNC FREQUENCY"
+            android:textColor="#00F0FF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <Spinner
+            android:id="@+id/spnBackupFrequency"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/glass_input_bg"
+            android:paddingHorizontal="12dp"
+            android:layout_marginBottom="10dp" />
+
+        <!-- CUSTOM MINUTES INPUT (VISIBLE WHEN CUSTOM FREQUENCY CHOSEN) -->
+        <EditText
+            android:id="@+id/etCustomMinutes"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/glass_input_bg"
+            android:hint="Custom Interval (Minutes, e.g. 5)"
+            android:inputType="number"
+            android:autofillHints=""
+            android:textColor="#E0F7FF"
+            android:textColorHint="#6600F0FF"
+            android:paddingHorizontal="16dp"
+            android:textSize="14sp"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp" />
+
+        <!-- ACTION BUTTONS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/btnCancelBackupProfile"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="@drawable/glass_input_bg"
+                android:text="@string/cancel"
+                android:textColor="#80C5DE"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnSaveBackupProfile"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="@drawable/glass_btn_bg"
+                android:text="SAVE PROFILE"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

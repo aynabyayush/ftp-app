@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/drawer_bg"
+    android:orientation="vertical"
+    android:padding="18dp">
+
+    <!-- HEADER WITH VIEW TOGGLE AND THREE-DOTS MENU -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/layoutHeaderRight"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.08"
+                android:text="LOCAL FILE MANAGER"
+                android:textColor="#00F0FF"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutHeaderRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnLocalViewToggle"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:background="@drawable/glass_input_bg"
+                android:contentDescription="View Toggle"
+                android:padding="7dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_grid_view"
+                android:layout_marginEnd="6dp" />
+
+            <ImageButton
+                android:id="@+id/btnLocalManagerMenu"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:background="@drawable/glass_input_bg"
+                android:contentDescription="Manager Menu"
+                android:padding="7dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_more_vert" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!-- PATH BREADCRUMB & BACK BUTTON & STORAGE VOLUME SWITCHER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/glass_card_bg"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="10dp">
+
+        <ImageButton
+            android:id="@+id/btnLocalManagerUp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/glass_input_bg"
+            android:contentDescription="Up Directory"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_arrow_up"
+            android:layout_marginEnd="6dp" />
+
+        <ImageButton
+            android:id="@+id/btnSwitchVolume"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/glass_input_bg"
+            android:contentDescription="Storage Volume"
+            android:padding="7dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_storage"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tvLocalManagerPath"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="/storage/emulated/0"
+            android:textColor="#00F0FF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:ellipsize="start"
+            android:singleLine="true" />
+    </LinearLayout>
+
+    <!-- FILE RECYCLERVIEW -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvLocalManagerList"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        tools:listitem="@layout/item_local_file" />
+
+    <TextView
+        android:id="@+id/tvLocalManagerEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingVertical="32dp"
+        android:text="No files found in this directory."
+        android:textColor="#80C5DE"
+        android:textSize="13sp"
+        android:visibility="gone" />
+
+    <!-- CLOSE BUTTON -->
+    <Button
+        android:id="@+id/btnCloseLocalManager"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/glass_btn_bg"
+        android:text="@string/close"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/drawer_bg"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- HEADER -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginBottom="18dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.08"
+                android:text="@string/settings_title"
+                android:textColor="#00F0FF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- SERVER PORT -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_port_label"
+            android:textColor="#00F0FF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etSettingsPort"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/glass_input_bg"
+            android:hint="@string/setting_port_hint"
+            android:inputType="number"
+            android:autofillHints=""
+            android:textColor="#E0F7FF"
+            android:textColorHint="#6600F0FF"
+            android:paddingHorizontal="16dp"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- DEFAULT SHARED DIRECTORY (SERVER) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_dir_label"
+            android:textColor="#00F0FF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <EditText
+                android:id="@+id/etSettingsDir"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/glass_input_bg"
+                android:hint="@string/setting_dir_hint"
+                android:focusable="false"
+                android:clickable="true"
+                android:cursorVisible="false"
+                android:inputType="none"
+                android:autofillHints=""
+                android:textColor="#E0F7FF"
+                android:textColorHint="#6600F0FF"
+                android:paddingHorizontal="12dp"
+                android:textSize="13sp"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnSelectSettingsDir"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="@drawable/glass_btn_secondary_bg"
+                android:text="@string/browse_folder"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="12dp" />
+        </LinearLayout>
+
+        <!-- DEFAULT DOWNLOADS DIRECTORY (CLIENT) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_download_dir_label"
+            android:textColor="#00F0FF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <EditText
+                android:id="@+id/etSettingsDownloadDir"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/glass_input_bg"
+                android:hint="@string/setting_download_dir_hint"
+                android:focusable="false"
+                android:clickable="true"
+                android:cursorVisible="false"
+                android:inputType="none"
+                android:autofillHints=""
+                android:textColor="#E0F7FF"
+                android:textColorHint="#6600F0FF"
+                android:paddingHorizontal="12dp"
+                android:textSize="13sp"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnSelectSettingsDownloadDir"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="@drawable/glass_btn_secondary_bg"
+                android:text="@string/browse_folder"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="12dp" />
+        </LinearLayout>
+
+        <!-- MAX THREADS -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_threads_label"
+            android:textColor="#00F0FF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etSettingsThreads"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/glass_input_bg"
+            android:hint="@string/setting_threads_hint"
+            android:inputType="number"
+            android:autofillHints=""
+            android:textColor="#E0F7FF"
+            android:textColorHint="#6600F0FF"
+            android:paddingHorizontal="16dp"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- PASSIVE PORTS RANGE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_passive_label"
+            android:textColor="#00F0FF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etSettingsPassivePorts"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/glass_input_bg"
+            android:hint="@string/setting_passive_hint"
+            android:inputType="text"
+            android:autofillHints=""
+            android:textColor="#E0F7FF"
+            android:textColorHint="#6600F0FF"
+            android:paddingHorizontal="16dp"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- ACTION BUTTONS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/btnCancelSettings"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="@drawable/glass_input_bg"
+                android:text="@string/cancel"
+                android:textColor="#80C5DE"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnSaveSettings"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="@drawable/glass_btn_bg"
+                android:text="@string/save_settings"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

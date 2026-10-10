@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/keyboardRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/drawer_bg"
+    android:orientation="vertical"
+    android:padding="6dp">
+
+    <!-- TOP HEADER -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="4dp"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:id="@+id/tvKeyboardFieldLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="⌨ CYBER INPUT"
+            android:textColor="#00F0FF"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/btnCloseKeyboard"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/glass_input_bg"
+            android:contentDescription="Close Keyboard"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_close" />
+    </RelativeLayout>
+
+    <!-- QUICK PRESETS ROW -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:orientation="horizontal"
+        android:layout_marginBottom="3dp">
+
+        <Button
+            android:id="@+id/keyFtpPrefix"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/glass_input_bg"
+            android:text="192.168."
+            android:textColor="#00F0FF"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:padding="1dp"
+            android:layout_marginEnd="2dp" />
+
+        <Button
+            android:id="@+id/keyPortSuffix"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/glass_input_bg"
+            android:text=":2221"
+            android:textColor="#00F0FF"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:padding="1dp"
+            android:layout_marginEnd="2dp" />
+
+        <Button
+            android:id="@+id/keyAnonUser"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:background="@drawable/glass_input_bg"
+            android:text="anonymous"
+            android:textColor="#00F0FF"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:padding="1dp" />
+    </LinearLayout>
+
+    <!-- NUMBERS ROW -->
+    <LinearLayout
+        android:id="@+id/rowNumbers"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:orientation="horizontal"
+        android:layout_marginBottom="2dp">
+    </LinearLayout>
+
+    <!-- ROW QWERTYUIOP -->
+    <LinearLayout
+        android:id="@+id/rowQwerty"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:orientation="horizontal"
+        android:layout_marginBottom="2dp">
+    </LinearLayout>
+
+    <!-- ROW ASDFGHJKL -->
+    <LinearLayout
+        android:id="@+id/rowAsdf"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:orientation="horizontal"
+        android:layout_marginBottom="2dp">
+    </LinearLayout>
+
+    <!-- ROW ZXCVBNM & BACKSPACE -->
+    <LinearLayout
+        android:id="@+id/rowZxcv"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:orientation="horizontal"
+        android:layout_marginBottom="2dp">
+    </LinearLayout>
+
+    <!-- BOTTOM ROW: SHIFT, SYMBOLS, SPACE, DONE -->
+    <LinearLayout
+        android:id="@+id/rowBottom"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:orientation="horizontal">
+    </LinearLayout>
+
+</LinearLayout>

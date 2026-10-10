@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Cyberpunk Futuristic Holographic Palette -->
+    <color name="cyber_bg_start">#080C14</color>
+    <color name="cyber_bg_center">#0D1B2A</color>
+    <color name="cyber_bg_end">#020813</color>
+
+    <color name="neon_cyan">#00F0FF</color>
+    <color name="neon_cyan_glow">#3300F0FF</color>
+    <color name="neon_cyan_stroke">#8000F0FF</color>
+
+    <color name="neon_magenta">#FF007F</color>
+    <color name="neon_magenta_glow">#33FF007F</color>
+    <color name="neon_magenta_stroke">#80FF007F</color>
+
+    <color name="neon_green">#00FF66</color>
+    <color name="neon_amber">#FFB703</color>
+
+    <color name="hologram_glass">#1A00F0FF</color>
+    <color name="hologram_card_bg">#180A121D</color>
+    <color name="hologram_card_stroke">#4D00F0FF</color>
+
+    <color name="text_cyber_primary">#E0F7FF</color>
+    <color name="text_cyber_secondary">#80C5DE</color>
+    <color name="text_cyber_hint">#6600F0FF</color>
+
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/drawer_bg"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- HEADER -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.08"
+                android:text="⚙ MORE OPTIONS"
+                android:textColor="#00F0FF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- SHOW HIDDEN FILES CHECKBOX -->
+        <CheckBox
+            android:id="@+id/chkShowHiddenFiles"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/glass_input_bg"
+            android:text="Show Hidden Files"
+            android:textColor="#E0F7FF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:buttonTint="#00F0FF"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginBottom="14dp" />
+
+        <!-- SORT BY SECTION -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SORT BY"
+            android:textColor="#00F0FF"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <LinearLayout
+            android:id="@+id/optSortName"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/glass_input_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="14dp"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:id="@+id/tvSortName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name (A-Z)"
+                android:textColor="#E0F7FF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/optSortSize"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/glass_input_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="14dp"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:id="@+id/tvSortSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Size (Largest)"
+                android:textColor="#E0F7FF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/optSortDate"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/glass_input_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="14dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:id="@+id/tvSortDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date Modified (Newest)"
+                android:textColor="#E0F7FF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- DETAILS SECTION -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DETAILS TO SHOW"
+            android:textColor="#00F0FF"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <LinearLayout
+            android:id="@+id/optDetailSize"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/glass_input_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="14dp"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:id="@+id/tvDetailSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="File Size"
+                android:textColor="#E0F7FF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/optDetailDate"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/glass_input_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="14dp"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:id="@+id/tvDetailDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date Modified"
+                android:textColor="#E0F7FF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/optDetailPath"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/glass_input_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="14dp"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:id="@+id/tvDetailPath"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Directory Path"
+                android:textColor="#E0F7FF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/optDetailNone"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/glass_input_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="14dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/tvDetailNone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="None"
+                android:textColor="#E0F7FF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- CLOSE BUTTON -->
+        <Button
+            android:id="@+id/btnCloseManagerOptions"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/glass_btn_bg"
+            android:text="@string/close"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</ScrollView>
