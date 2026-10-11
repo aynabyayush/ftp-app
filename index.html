@@ -6,12 +6,12 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="logo.png" />
   <link rel="apple-touch-icon" href="logo.png" />
-  <title>FTPApp — High Performance Android FTP Client & Server</title>
+  <title>FTPApp — High-Performance Android FTP Client & Server</title>
 
-  <!-- Fonts -->
+  <!-- Google Fonts: Orbitron (Cyber HUD / Titles), JetBrains Mono (Telemetry / Code), Plus Jakarta Sans (Readable Prose) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -27,7 +27,9 @@
             cyber: {
               black: '#02040A',
               navy: '#040914',
+              deep: '#060B18',
               surface: '#0B162C',
+              surfaceAlt: '#0E1D33',
               cyan: '#00F0FF',
               cyanDim: '#00E5FF',
               purple: '#9D00FF',
@@ -35,6 +37,7 @@
             }
           },
           fontFamily: {
+            orbitron: ['"Orbitron"', 'sans-serif'],
             sans: ['"Plus Jakarta Sans"', 'sans-serif'],
             mono: ['"JetBrains Mono"', 'monospace']
           }
@@ -51,43 +54,75 @@
       overflow-x: hidden;
     }
 
+    /* Sci-Fi Grid Background */
     .cyber-grid {
-      background-size: 40px 40px;
+      background-size: 44px 44px;
       background-image:
-        linear-gradient(to right, rgba(0, 240, 255, 0.04) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+        linear-gradient(to right, rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
     }
 
+    /* Hologram HUD Card Glows */
     .cyber-glow-cyan {
-      box-shadow: 0 0 25px -5px rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 30px -4px rgba(0, 240, 255, 0.45);
     }
 
     .cyber-glow-purple {
-      box-shadow: 0 0 35px -5px rgba(157, 0, 255, 0.35);
+      box-shadow: 0 0 35px -4px rgba(157, 0, 255, 0.4);
     }
 
+    .cyber-glow-magenta {
+      box-shadow: 0 0 30px -4px rgba(255, 0, 127, 0.4);
+    }
+
+    /* Holographic Card Style */
     .glass-card {
-      background: rgba(11, 22, 44, 0.65);
+      background: linear-gradient(135deg, rgba(11, 22, 44, 0.75) 0%, rgba(4, 9, 20, 0.9) 100%);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(0, 240, 255, 0.15);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.04), 0 10px 30px -10px rgba(0, 0, 0, 0.7);
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
     }
 
     .glass-card:hover {
-      border-color: rgba(0, 240, 255, 0.4);
+      border-color: rgba(0, 240, 255, 0.55);
       transform: translateY(-4px);
-      box-shadow: 0 16px 35px -10px rgba(0, 240, 255, 0.25);
+      box-shadow: 0 16px 35px -8px rgba(0, 240, 255, 0.3), inset 0 0 20px rgba(157, 0, 255, 0.15);
     }
 
     .glass-card-interactive {
-      background: rgba(11, 22, 44, 0.85);
+      background: linear-gradient(180deg, rgba(11, 22, 44, 0.92) 0%, rgba(4, 9, 20, 0.96) 100%);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(0, 240, 255, 0.25);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 40px rgba(0, 240, 255, 0.15), inset 0 0 25px rgba(157, 0, 255, 0.1);
     }
 
-    .text-gradient {
+    /* Cyber Corner Notches */
+    .cyber-card-cut {
+      position: relative;
+    }
+    .cyber-card-cut::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #00F0FF, #9D00FF, #FF007F, transparent);
+      box-shadow: 0 0 10px #00F0FF;
+    }
+
+    /* Cyber Neon Text Gradients */
+    .text-gradient-cyan {
       background: linear-gradient(135deg, #00F0FF 0%, #A8C7FA 50%, #9D00FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .text-gradient-neon {
+      background: linear-gradient(135deg, #00F0FF 0%, #9D00FF 60%, #FF007F 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -95,39 +130,39 @@
 </head>
 <body class="cyber-grid relative min-h-screen">
 
-  <!-- Ambient Glow Blobs -->
-  <div class="fixed top-[-150px] left-[-150px] w-[500px] h-[500px] bg-cyber-cyan/15 rounded-full blur-[140px] pointer-events-none"></div>
-  <div class="fixed top-[30%] right-[-150px] w-[600px] h-[600px] bg-cyber-purple/15 rounded-full blur-[160px] pointer-events-none"></div>
-  <div class="fixed bottom-[-100px] left-[20%] w-[500px] h-[500px] bg-cyber-magenta/10 rounded-full blur-[140px] pointer-events-none"></div>
+  <!-- Ambient Hologram Glow Blobs -->
+  <div class="fixed top-[-160px] left-[-160px] w-[520px] h-[520px] bg-cyber-cyan/15 rounded-full blur-[140px] pointer-events-none"></div>
+  <div class="fixed top-[32%] right-[-160px] w-[620px] h-[620px] bg-cyber-purple/15 rounded-full blur-[160px] pointer-events-none"></div>
+  <div class="fixed bottom-[-120px] left-[20%] w-[520px] h-[520px] bg-cyber-magenta/10 rounded-full blur-[140px] pointer-events-none"></div>
 
   <!-- Navigation Bar -->
-  <header class="sticky top-0 z-50 backdrop-blur-md bg-cyber-black/75 border-b border-cyber-cyan/10">
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-cyber-black/85 border-b border-cyber-cyan/20">
     <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <!-- Updated Logo with App Icon -->
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyber-purple to-cyber-cyan p-[1.5px] flex items-center justify-center overflow-hidden shadow-lg shadow-cyber-cyan/20">
-    <img
-      src="logo.png"
-      alt="FTPApp Logo"
-      class="w-full h-full rounded-[10px] object-cover"
-    />
-  </div>
+        <!-- Logo with App Icon -->
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyber-purple via-cyber-cyan to-cyber-magenta p-[1.5px] flex items-center justify-center overflow-hidden shadow-lg shadow-cyber-cyan/30">
+          <img
+            src="logo.png"
+            alt="FTPApp Logo"
+            class="w-full h-full rounded-[10px] object-cover"
+          />
+        </div>
         <div class="flex flex-col">
-          <span class="font-bold text-xl tracking-wider text-white font-mono">FTP<span class="text-cyber-cyan">APP</span></span>
-          <span class="text-[10px] text-gray-400 font-mono tracking-widest uppercase">v1.0</span>
+          <span class="font-orbitron font-extrabold text-xl tracking-wider text-white">FTP<span class="text-cyber-cyan">APP</span></span>
+          <span class="text-[9px] text-cyber-cyan font-mono tracking-widest uppercase">v1.0</span>
         </div>
       </div>
 
-      <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-300">
-          <a href="#features" class="hover:text-cyber-cyan transition-colors">Features</a>
-          <a href="#guide" class="hover:text-cyber-cyan transition-colors">Usage Guide</a>
-          <a href="#access" class="hover:text-cyber-cyan transition-colors">How to Access</a>
-          <a href="#screenshots" class="hover:text-cyber-cyan transition-colors">Screenshots</a>
-          <a href="#downloads" class="hover:text-cyber-cyan transition-colors">Download</a>
+      <nav class="hidden md:flex items-center space-x-8 text-xs font-orbitron font-semibold tracking-wider text-gray-300 uppercase">
+        <a href="#features" class="hover:text-cyber-cyan transition-colors">Features</a>
+        <a href="#guide" class="hover:text-cyber-cyan transition-colors">Usage Guide</a>
+        <a href="#access" class="hover:text-cyber-cyan transition-colors">How to Access</a>
+        <a href="#screenshots" class="hover:text-cyber-cyan transition-colors">Screenshots</a>
+        <a href="#downloads" class="hover:text-cyber-cyan transition-colors">Download</a>
       </nav>
 
       <div class="flex items-center space-x-4">
-        <a href="https://github.com/aynabyayush/ftp-app/releases/latest" target="_blank" class="px-5 py-2.5 rounded-lg bg-cyber-cyan hover:bg-cyber-cyanDim text-cyber-black font-semibold text-sm transition-all flex items-center space-x-2 cyber-glow-cyan">
+        <a href="https://github.com/aynabyayush/ftp-app/releases/latest" target="_blank" class="px-5 py-2.5 rounded-lg bg-cyber-cyan hover:bg-cyber-cyanDim text-cyber-black font-orbitron font-bold text-xs uppercase tracking-wider transition-all flex items-center space-x-2 cyber-glow-cyan hover:scale-[1.02]">
           <i data-lucide="download" class="w-4 h-4"></i>
           <span>Get APK</span>
         </a>
@@ -141,105 +176,105 @@
 
       <!-- Left Column: Copy -->
       <div class="lg:col-span-7 space-y-6">
-        <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-cyber-surface/80 border border-cyber-cyan/30 text-cyber-cyan text-xs font-mono">
-          <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse"></span>
-          <span>v1.0 Now Available</span>
+        <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-cyber-surface/90 border border-cyber-cyan/40 text-cyber-cyan text-xs font-orbitron font-semibold tracking-wider">
+          <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse shadow-[0_0_8px_#00F0FF]"></span>
+          <span>v1.0 REALTIME ENGINE ACTIVE</span>
         </div>
 
-        <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.15] text-white">
+        <h1 class="font-orbitron text-4xl sm:text-6xl font-black tracking-tight leading-[1.15] text-white uppercase">
           High-Speed FTP Suite <br/>
-          <span class="text-gradient">Engineered for Android.</span>
+          <span class="text-gradient-neon">Engineered For Android.</span>
         </h1>
 
-        <p class="text-gray-400 text-lg max-w-xl leading-relaxed">
-          Transform your mobile device into a high-throughput FTP server while managing remote endpoints, background synchronizations, and storage transfers seamlessly.
+        <p class="text-gray-300 text-lg max-w-xl leading-relaxed">
+          Transform your mobile device into a high-throughput FTP server daemon while managing remote endpoints, background synchronizations, and multi-volume transfers seamlessly.
         </p>
 
         <div class="flex flex-wrap gap-4 pt-4">
-          <a href="https://github.com/aynabyayush/ftp-app/releases/latest" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-cyber-cyan to-cyan-400 text-cyber-black font-bold flex items-center space-x-3 cyber-glow-cyan hover:scale-[1.02] transition-transform">
+          <a href="https://github.com/aynabyayush/ftp-app/releases/latest" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-cyber-cyan via-cyan-400 to-blue-500 text-cyber-black font-orbitron font-extrabold text-sm uppercase tracking-wider flex items-center space-x-3 cyber-glow-cyan hover:scale-[1.02] transition-transform">
             <i data-lucide="download" class="w-5 h-5"></i>
             <span>Download FTPApp</span>
           </a>
-          <a href="https://github.com/aynabyayush/ftp-app" target="_blank" class="px-7 py-3.5 rounded-xl bg-cyber-surface/70 border border-gray-700 hover:border-cyber-purple text-white font-medium flex items-center space-x-3 transition-all hover:bg-cyber-surface">
+          <a href="https://github.com/aynabyayush/ftp-app" target="_blank" class="px-7 py-3.5 rounded-xl bg-cyber-surface/80 border border-cyber-purple/50 hover:border-cyber-cyan text-white font-orbitron font-bold text-sm uppercase tracking-wider flex items-center space-x-3 transition-all hover:bg-cyber-surface hover:shadow-[0_0_20px_rgba(157,0,255,0.3)]">
             <i data-lucide="git-branch" class="w-5 h-5 text-cyber-purple"></i>
             <span>Browse Source</span>
           </a>
         </div>
 
-        <!-- Metric Badges -->
-        <div class="grid grid-cols-3 gap-4 pt-8 border-t border-gray-800 max-w-lg font-mono">
+        <!-- Metric Badges in Orbitron & Mono -->
+        <div class="grid grid-cols-3 gap-4 pt-8 border-t border-gray-800/80 max-w-lg">
           <div>
-            <div class="text-2xl font-bold text-cyber-cyan">API 29+</div>
-            <div class="text-xs text-gray-500">Android 10+</div>
+            <div class="font-orbitron text-2xl font-bold text-cyber-cyan tracking-wide">API 29+</div>
+            <div class="text-xs text-gray-400 font-mono mt-0.5">Android 10+</div>
           </div>
           <div>
-            <div class="text-2xl font-bold text-white">0%</div>
-            <div class="text-xs text-gray-500">Ad & Tracker Free</div>
+            <div class="font-orbitron text-2xl font-bold text-white tracking-wide">0%</div>
+            <div class="text-xs text-gray-400 font-mono mt-0.5">Ad & Tracker Free</div>
           </div>
           <div>
-            <div class="text-2xl font-bold text-cyber-purple">MINA</div>
-            <div class="text-xs text-gray-500">Core Daemon Engine</div>
+            <div class="font-orbitron text-2xl font-bold text-cyber-purple tracking-wide">MINA</div>
+            <div class="text-xs text-gray-400 font-mono mt-0.5">Core Daemon Engine</div>
           </div>
         </div>
       </div>
 
       <!-- Right Column: Interactive Server Card -->
       <div id="server-demo" class="lg:col-span-5">
-        <div class="glass-card-interactive rounded-2xl p-6 relative overflow-hidden">
+        <div class="glass-card-interactive cyber-card-cut rounded-2xl p-6 relative overflow-hidden">
 
           <div class="flex items-center justify-between border-b border-gray-800 pb-4 mb-5">
             <div class="flex items-center space-x-2">
-              <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
-              <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
-              <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
-              <span class="text-xs text-gray-400 font-mono ml-2">HOST FTP SERVER  </span>
+              <span class="w-3 h-3 rounded-full bg-red-500/80 shadow-[0_0_6px_rgba(239,68,68,0.6)]"></span>
+              <span class="w-3 h-3 rounded-full bg-yellow-500/80 shadow-[0_0_6px_rgba(234,179,8,0.6)]"></span>
+              <span class="w-3 h-3 rounded-full bg-green-500/80 shadow-[0_0_6px_rgba(34,197,94,0.6)]"></span>
+              <span class="text-xs text-gray-300 font-orbitron font-bold uppercase tracking-wider ml-2">HOST FTP SERVER</span>
             </div>
-            <div id="serverBadge" class="px-2.5 py-0.5 rounded text-[11px] font-mono font-semibold bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30">
+            <div id="serverBadge" class="px-2.5 py-0.5 rounded text-[11px] font-orbitron font-bold tracking-wider bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/40 shadow-[0_0_10px_rgba(0,240,255,0.25)]">
               ONLINE
             </div>
           </div>
 
           <!-- Server State Monitor -->
           <div class="space-y-4">
-            <div class="p-4 rounded-xl bg-cyber-black/70 border border-gray-800">
-              <div class="text-xs text-gray-400 font-mono uppercase tracking-wider mb-1">Server Access Endpoint</div>
+            <div class="p-4 rounded-xl bg-cyber-black/80 border border-cyber-cyan/30 shadow-inner">
+              <div class="text-[11px] text-gray-400 font-orbitron font-semibold uppercase tracking-wider mb-1">Server Access Endpoint</div>
               <div class="flex items-center justify-between">
                 <span id="serverUri" class="text-cyber-cyan font-mono text-base font-bold tracking-wide">ftp://192.168.1.104:2121</span>
-                <button onclick="copyUri()" class="p-2 rounded-lg bg-cyber-surface hover:bg-gray-700 text-gray-300 transition-colors" title="Copy URL">
+                <button onclick="copyUri()" class="p-2 rounded-lg bg-cyber-surface hover:bg-cyber-surfaceAlt border border-cyber-cyan/30 text-gray-200 transition-all hover:text-cyber-cyan" title="Copy URL">
                   <i data-lucide="copy" class="w-4 h-4"></i>
                 </button>
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3 text-xs font-mono">
-              <div class="p-3 rounded-lg bg-cyber-black/40 border border-gray-800/80">
-                <div class="text-gray-500">Listening Port</div>
-                <div class="text-white font-semibold mt-0.5">2121 / Custom</div>
+            <div class="grid grid-cols-2 gap-3 text-xs">
+              <div class="p-3 rounded-lg bg-cyber-black/60 border border-gray-800">
+                <div class="text-gray-400 font-orbitron text-[10px] uppercase">Listening Port</div>
+                <div class="text-white font-mono font-bold mt-0.5">2121 / Custom</div>
               </div>
-              <div class="p-3 rounded-lg bg-cyber-black/40 border border-gray-800/80">
-                <div class="text-gray-500">Passive Ports</div>
-                <div class="text-white font-semibold mt-0.5">50000 - 50100</div>
+              <div class="p-3 rounded-lg bg-cyber-black/60 border border-gray-800">
+                <div class="text-gray-400 font-orbitron text-[10px] uppercase">Passive Ports</div>
+                <div class="text-white font-mono font-bold mt-0.5">50000 - 50100</div>
               </div>
             </div>
 
-            <div class="p-3 rounded-lg bg-cyber-black/40 border border-gray-800/80 font-mono text-xs">
-              <div class="text-gray-500">Shared Directory</div>
-              <div class="text-gray-300 mt-0.5 truncate">/storage/emulated/0 (Internal)</div>
+            <div class="p-3 rounded-lg bg-cyber-black/60 border border-gray-800 text-xs">
+              <div class="text-gray-400 font-orbitron text-[10px] uppercase">Shared Directory</div>
+              <div class="text-gray-200 font-mono mt-0.5 truncate">/storage/emulated/0 (Internal)</div>
             </div>
 
             <!-- Transfer Status Simulation -->
             <div class="space-y-2 pt-2">
-              <div class="flex justify-between text-xs font-mono text-gray-400">
-                <span>Active Background Sync</span>
-                <span id="speedIndicator" class="text-cyber-cyan">18.4 MB/s</span>
+              <div class="flex justify-between text-xs font-orbitron">
+                <span class="text-gray-400 text-[11px] uppercase tracking-wide">Active Background Sync</span>
+                <span id="speedIndicator" class="text-cyber-cyan font-bold tracking-wider">18.4 MB/s</span>
               </div>
-              <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
-                <div id="transferProgress" class="bg-gradient-to-r from-cyber-cyan to-cyber-purple h-full w-[65%] rounded-full transition-all duration-500"></div>
+              <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden border border-gray-800">
+                <div id="transferProgress" class="bg-gradient-to-r from-cyber-cyan via-cyber-purple to-cyber-magenta h-full w-[65%] rounded-full shadow-[0_0_12px_#00F0FF] transition-all duration-500"></div>
               </div>
             </div>
 
             <!-- Interactive Action -->
-            <button id="toggleServerBtn" onclick="toggleServer()" class="w-full py-3 rounded-xl bg-cyber-surface border border-cyber-cyan/40 hover:border-cyber-cyan text-cyber-cyan hover:bg-cyber-cyan hover:text-cyber-black transition-all font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center space-x-2">
+            <button id="toggleServerBtn" onclick="toggleServer()" class="w-full py-3.5 rounded-xl bg-cyber-surface/90 border border-cyber-cyan/50 hover:border-cyber-cyan text-cyber-cyan hover:bg-cyber-cyan hover:text-cyber-black transition-all font-orbitron text-xs font-extrabold uppercase tracking-widest flex items-center justify-center space-x-2 shadow-[0_0_15px_rgba(0,240,255,0.15)] hover:shadow-[0_0_25px_rgba(0,240,255,0.5)]">
               <i data-lucide="power" class="w-4 h-4"></i>
               <span id="toggleBtnText">Stop FTP Daemon</span>
             </button>
@@ -249,56 +284,55 @@
     </div>
   </section>
 
-
   <!-- Core Features Grid (2x2 Layout) -->
   <section id="features" class="max-w-7xl mx-auto px-6 py-20 border-t border-gray-900">
     <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
-      <h2 class="text-xs uppercase font-mono tracking-widest text-cyber-cyan">Engineered for Performance</h2>
-      <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Full-Featured Protocol Toolset</h3>
+      <h2 class="text-xs uppercase font-orbitron font-bold tracking-widest text-cyber-cyan">Engineered for Performance</h2>
+      <h3 class="font-orbitron text-3xl sm:text-4xl font-extrabold text-white uppercase">Full-Featured Protocol Toolset</h3>
       <p class="text-gray-400 text-sm sm:text-base">Everything needed to turn an Android device into a reliable network storage node and remote file explorer.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
 
       <!-- Feature 1 -->
-      <div class="glass-card rounded-2xl p-6 space-y-4">
-        <div class="w-12 h-12 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/30 flex items-center justify-center text-cyber-cyan">
+      <div class="glass-card cyber-card-cut rounded-2xl p-6 space-y-4">
+        <div class="w-12 h-12 rounded-xl bg-cyber-cyan/15 border border-cyber-cyan/40 flex items-center justify-center text-cyber-cyan shadow-[0_0_15px_rgba(0,240,255,0.25)]">
           <i data-lucide="server" class="w-6 h-6"></i>
         </div>
-        <h4 class="text-lg font-bold text-white">Embedded Server Daemon</h4>
+        <h4 class="font-orbitron text-lg font-bold text-white uppercase tracking-wide">Embedded Server Daemon</h4>
         <p class="text-sm text-gray-400 leading-relaxed">
           Powered by Apache FtpServer and Apache MINA. Run a fully autonomous FTP host on Wi-Fi or Personal Hotspot with configurable ports, user credentials, or anonymous access.
         </p>
       </div>
 
       <!-- Feature 2 -->
-      <div class="glass-card rounded-2xl p-6 space-y-4">
-        <div class="w-12 h-12 rounded-xl bg-cyber-purple/10 border border-cyber-purple/30 flex items-center justify-center text-cyber-purple">
+      <div class="glass-card cyber-card-cut rounded-2xl p-6 space-y-4">
+        <div class="w-12 h-12 rounded-xl bg-cyber-purple/15 border border-cyber-purple/40 flex items-center justify-center text-cyber-purple shadow-[0_0_15px_rgba(157,0,255,0.25)]">
           <i data-lucide="repeat" class="w-6 h-6"></i>
         </div>
-        <h4 class="text-lg font-bold text-white">Real-Time Sync Engine</h4>
+        <h4 class="font-orbitron text-lg font-bold text-white uppercase tracking-wide">Real-Time Sync Engine</h4>
         <p class="text-sm text-gray-400 leading-relaxed">
           Automate local-to-remote folder mirroring. Configure interval triggers (every 15m, hourly, daily, or custom minutes) that run smoothly in the background via Android foreground services.
         </p>
       </div>
 
       <!-- Feature 3 -->
-      <div class="glass-card rounded-2xl p-6 space-y-4">
-        <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+      <div class="glass-card cyber-card-cut rounded-2xl p-6 space-y-4">
+        <div class="w-12 h-12 rounded-xl bg-blue-500/15 border border-blue-500/40 flex items-center justify-center text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.25)]">
           <i data-lucide="folder-archive" class="w-6 h-6"></i>
         </div>
-        <h4 class="text-lg font-bold text-white">Multi-Volume & ZIP Engine</h4>
+        <h4 class="font-orbitron text-lg font-bold text-white uppercase tracking-wide">Multi-Volume & ZIP Engine</h4>
         <p class="text-sm text-gray-400 leading-relaxed">
           Access internal memory and mounted MicroSD cards directly. Compress multi-file folders to standard ZIP archives on-device for streamlined single-stream network transfers.
         </p>
       </div>
 
       <!-- Feature 4 -->
-      <div class="glass-card rounded-2xl p-6 space-y-4">
-        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+      <div class="glass-card cyber-card-cut rounded-2xl p-6 space-y-4">
+        <div class="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.25)]">
           <i data-lucide="shield-check" class="w-6 h-6"></i>
         </div>
-        <h4 class="text-lg font-bold text-white">Screen-Off WakeLock Handling</h4>
+        <h4 class="font-orbitron text-lg font-bold text-white uppercase tracking-wide">Screen-Off WakeLock Handling</h4>
         <p class="text-sm text-gray-400 leading-relaxed">
           Prevents transfers from dropping when the screen turns off by leveraging CPU WakeLocks and Wi-Fi Locks that maintain active network sockets through aggressive OS battery optimizations.
         </p>
@@ -310,30 +344,30 @@
   <!-- Step-by-Step Usage Guide -->
   <section id="guide" class="max-w-7xl mx-auto px-6 py-20 border-t border-gray-900">
     <div class="max-w-3xl mx-auto text-center mb-16 space-y-4">
-      <h2 class="text-xs uppercase font-mono tracking-widest text-cyber-cyan">Quick Start</h2>
-      <h3 class="text-3xl sm:text-4xl font-extrabold text-white">How To Connect & Transfer</h3>
+      <h2 class="text-xs uppercase font-orbitron font-bold tracking-widest text-cyber-cyan">Quick Start</h2>
+      <h3 class="font-orbitron text-3xl sm:text-4xl font-extrabold text-white uppercase">How To Connect & Transfer</h3>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div class="glass-card rounded-2xl p-6 relative">
-        <span class="text-4xl font-extrabold font-mono text-gray-800 absolute top-4 right-4">01</span>
-        <h4 class="text-lg font-bold text-white mb-2">Host Local FTP</h4>
+      <div class="glass-card cyber-card-cut rounded-2xl p-6 relative">
+        <span class="font-orbitron text-4xl font-black text-gray-800 absolute top-4 right-4 select-none">01</span>
+        <h4 class="font-orbitron text-lg font-bold text-white mb-2 uppercase tracking-wide">Host Local FTP</h4>
         <p class="text-sm text-gray-400 leading-relaxed">
-          Open FTPApp, select your shared directory, and tap <strong class="text-cyber-cyan">Start Server</strong>. Connect your PC or Mac to the displayed URL directly over Wi-Fi.
+          Open FTPApp, select your shared directory, and tap <strong class="text-cyber-cyan font-semibold">Start Server</strong>. Connect your PC or Mac to the displayed URL directly over Wi-Fi.
         </p>
       </div>
 
-      <div class="glass-card rounded-2xl p-6 relative">
-        <span class="text-4xl font-extrabold font-mono text-gray-800 absolute top-4 right-4">02</span>
-        <h4 class="text-lg font-bold text-white mb-2">Connect to Remote Host</h4>
+      <div class="glass-card cyber-card-cut rounded-2xl p-6 relative">
+        <span class="font-orbitron text-4xl font-black text-gray-800 absolute top-4 right-4 select-none">02</span>
+        <h4 class="font-orbitron text-lg font-bold text-white mb-2 uppercase tracking-wide">Connect to Remote Host</h4>
         <p class="text-sm text-gray-400 leading-relaxed">
-          Tap <strong class="text-cyber-purple">+ Add Server</strong>, input target host IP and port, and browse remote directories in customizable List or Grid layouts.
+          Tap <strong class="text-cyber-purple font-semibold">+ Add Server</strong>, input target host IP and port, and browse remote directories in customizable List or Grid layouts.
         </p>
       </div>
 
-      <div class="glass-card rounded-2xl p-6 relative">
-        <span class="text-4xl font-extrabold font-mono text-gray-800 absolute top-4 right-4">03</span>
-        <h4 class="text-lg font-bold text-white mb-2">Automate Backups</h4>
+      <div class="glass-card cyber-card-cut rounded-2xl p-6 relative">
+        <span class="font-orbitron text-4xl font-black text-gray-800 absolute top-4 right-4 select-none">03</span>
+        <h4 class="font-orbitron text-lg font-bold text-white mb-2 uppercase tracking-wide">Automate Backups</h4>
         <p class="text-sm text-gray-400 leading-relaxed">
           Set up a folder sync profile to auto-upload camera rolls, downloads, or documents to remote storage without manual intervention.
         </p>
@@ -344,8 +378,8 @@
   <!-- Client Access Methods Section -->
   <section id="access" class="max-w-7xl mx-auto px-6 py-20 border-t border-gray-900">
     <div class="max-w-3xl mx-auto text-center mb-16 space-y-4">
-      <h2 class="text-xs uppercase font-mono tracking-widest text-cyber-cyan">FOR DESKTOPS</h2>
-      <h3 class="text-3xl sm:text-4xl font-extrabold text-white">How To Access Your Server On PC</h3>
+      <h2 class="text-xs uppercase font-orbitron font-bold tracking-widest text-cyber-cyan">For Desktops</h2>
+      <h3 class="font-orbitron text-3xl sm:text-4xl font-extrabold text-white uppercase">How To Access Your Server On PC</h3>
       <p class="text-gray-400 text-sm sm:text-base">
         Once the FTP daemon is running on your Android device, mount and browse your storage from any desktop or mobile client on the same network.
       </p>
@@ -354,77 +388,77 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
       <!-- Windows File Explorer -->
-      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-4 group">
+      <div class="glass-card cyber-card-cut rounded-2xl p-6 flex flex-col justify-between space-y-4 group">
         <div class="space-y-4">
-          <div class="w-12 h-12 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/30 flex items-center justify-center text-cyber-cyan group-hover:scale-105 transition-transform">
+          <div class="w-12 h-12 rounded-xl bg-cyber-cyan/15 border border-cyber-cyan/40 flex items-center justify-center text-cyber-cyan group-hover:scale-105 transition-transform shadow-[0_0_12px_rgba(0,240,255,0.25)]">
             <i data-lucide="monitor" class="w-6 h-6"></i>
           </div>
           <div>
-            <span class="text-xs font-mono text-cyber-cyan uppercase tracking-wider">Windows</span>
-            <h4 class="text-lg font-bold text-white mt-1">File Explorer</h4>
+            <span class="text-xs font-orbitron font-bold text-cyber-cyan uppercase tracking-wider">Windows</span>
+            <h4 class="font-orbitron text-base font-bold text-white mt-1 uppercase">File Explorer</h4>
           </div>
           <p class="text-sm text-gray-400 leading-relaxed">
             Open File Explorer (<kbd class="px-1.5 py-0.5 rounded bg-cyber-black text-gray-300 font-mono text-xs border border-gray-700">Win + E</kbd>), paste your endpoint into the address bar, and press Enter to browse natively.
           </p>
         </div>
-        <div class="p-3 rounded-lg bg-cyber-black/60 border border-gray-800 font-mono text-xs text-cyber-cyan select-all break-all">
+        <div class="p-3 rounded-lg bg-cyber-black/80 border border-cyber-cyan/30 font-mono text-xs text-cyber-cyan select-all break-all">
           ftp://192.168.1.104:2121
         </div>
       </div>
 
       <!-- macOS Finder -->
-      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-4 group">
+      <div class="glass-card cyber-card-cut rounded-2xl p-6 flex flex-col justify-between space-y-4 group">
         <div class="space-y-4">
-          <div class="w-12 h-12 rounded-xl bg-cyber-purple/10 border border-cyber-purple/30 flex items-center justify-center text-cyber-purple group-hover:scale-105 transition-transform">
+          <div class="w-12 h-12 rounded-xl bg-cyber-purple/15 border border-cyber-purple/40 flex items-center justify-center text-cyber-purple group-hover:scale-105 transition-transform shadow-[0_0_12px_rgba(157,0,255,0.25)]">
             <i data-lucide="laptop" class="w-6 h-6"></i>
           </div>
           <div>
-            <span class="text-xs font-mono text-cyber-purple uppercase tracking-wider">macOS</span>
-            <h4 class="text-lg font-bold text-white mt-1">Finder Connect</h4>
+            <span class="text-xs font-orbitron font-bold text-cyber-purple uppercase tracking-wider">macOS</span>
+            <h4 class="font-orbitron text-base font-bold text-white mt-1 uppercase">Finder Connect</h4>
           </div>
           <p class="text-sm text-gray-400 leading-relaxed">
             In Finder, press <kbd class="px-1.5 py-0.5 rounded bg-cyber-black text-gray-300 font-mono text-xs border border-gray-700">Cmd + K</kbd> to open <em>Connect to Server</em>, enter the URL, and select <strong>Guest / Registered User</strong>.
           </p>
         </div>
-        <div class="p-3 rounded-lg bg-cyber-black/60 border border-gray-800 font-mono text-xs text-cyber-purple select-all break-all">
+        <div class="p-3 rounded-lg bg-cyber-black/80 border border-cyber-purple/30 font-mono text-xs text-cyber-purple select-all break-all">
           ftp://192.168.1.104:2121
         </div>
       </div>
 
       <!-- Dedicated FTP Clients -->
-      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-4 group">
+      <div class="glass-card cyber-card-cut rounded-2xl p-6 flex flex-col justify-between space-y-4 group">
         <div class="space-y-4">
-          <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 group-hover:scale-105 transition-transform">
+          <div class="w-12 h-12 rounded-xl bg-blue-500/15 border border-blue-500/40 flex items-center justify-center text-blue-400 group-hover:scale-105 transition-transform shadow-[0_0_12px_rgba(59,130,246,0.25)]">
             <i data-lucide="hard-drive-download" class="w-6 h-6"></i>
           </div>
           <div>
-            <span class="text-xs font-mono text-blue-400 uppercase tracking-wider">Third-Party Clients</span>
-            <h4 class="text-lg font-bold text-white mt-1">FileZilla / WinSCP</h4>
+            <span class="text-xs font-orbitron font-bold text-blue-400 uppercase tracking-wider">Third-Party Clients</span>
+            <h4 class="font-orbitron text-base font-bold text-white mt-1 uppercase">FileZilla / WinSCP</h4>
           </div>
           <p class="text-sm text-gray-400 leading-relaxed">
             Enter the host IP in <strong>Host</strong>, your specified port (default <code class="text-white font-mono">2121</code>) in <strong>Port</strong>, and choose <strong>Passive Mode (PASV)</strong> for optimal transfers.
           </p>
         </div>
-        <div class="p-3 rounded-lg bg-cyber-black/60 border border-gray-800 font-mono text-xs text-blue-300">
+        <div class="p-3 rounded-lg bg-cyber-black/80 border border-blue-500/30 font-mono text-xs text-blue-300">
           Host: 192.168.1.104 &bull; Port: 2121
         </div>
       </div>
 
       <!-- Terminal / cURL -->
-      <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-4 group">
+      <div class="glass-card cyber-card-cut rounded-2xl p-6 flex flex-col justify-between space-y-4 group">
         <div class="space-y-4">
-          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform shadow-[0_0_12px_rgba(16,185,129,0.25)]">
             <i data-lucide="terminal" class="w-6 h-6"></i>
           </div>
           <div>
-            <span class="text-xs font-mono text-emerald-400 uppercase tracking-wider">CLI & Scripts</span>
-            <h4 class="text-lg font-bold text-white mt-1">Terminal & cURL</h4>
+            <span class="text-xs font-orbitron font-bold text-emerald-400 uppercase tracking-wider">CLI & Scripts</span>
+            <h4 class="font-orbitron text-base font-bold text-white mt-1 uppercase">Terminal & cURL</h4>
           </div>
           <p class="text-sm text-gray-400 leading-relaxed">
             Quickly query, download, or script automated pushes using standard command line protocol tools without installing external software.
           </p>
         </div>
-        <div class="p-3 rounded-lg bg-cyber-black/60 border border-gray-800 font-mono text-xs text-emerald-300 select-all overflow-x-auto whitespace-nowrap">
+        <div class="p-3 rounded-lg bg-cyber-black/80 border border-emerald-500/30 font-mono text-xs text-emerald-300 select-all overflow-x-auto whitespace-nowrap">
           curl -u user:pass ftp://192.168.1.104:2121/
         </div>
       </div>
@@ -432,70 +466,69 @@
     </div>
   </section>
 
-  <!-- Screenshots Gallery Section (Ordered & Labeled as README) -->
+  <!-- Screenshots Gallery Section -->
   <section id="screenshots" class="max-w-7xl mx-auto px-6 py-20 border-t border-gray-900">
     <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
-      <h2 class="text-xs uppercase font-mono tracking-widest text-cyber-cyan">Application Interface</h2>
-      <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Visual Walkthrough</h3>
+      <h2 class="text-xs uppercase font-orbitron font-bold tracking-widest text-cyber-cyan">Application Interface</h2>
+      <h3 class="font-orbitron text-3xl sm:text-4xl font-extrabold text-white uppercase">Visual Walkthrough</h3>
       <p class="text-gray-400 text-sm sm:text-base">Experience the dark cyber-glass interface optimized for rapid file discovery and real-time status tracking.</p>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
       <!-- 1. Home Interface -->
-      <div class="glass-card rounded-2xl p-3 space-y-3 group">
-        <div class="rounded-xl overflow-hidden border border-cyber-cyan/20 bg-cyber-navy/80 aspect-[9/19] flex items-center justify-center">
+      <div class="glass-card cyber-card-cut rounded-2xl p-3 space-y-3 group">
+        <div class="rounded-xl overflow-hidden border border-cyber-cyan/30 bg-cyber-navy/90 aspect-[9/19] flex items-center justify-center">
           <img src="https://i.postimg.cc/wT9Zh5nd/HOMESCREEN.jpg" alt="Home Interface" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" loading="lazy" />
         </div>
         <div class="px-2 pb-1 text-center">
-          <span class="text-xs font-mono font-semibold text-cyber-cyan uppercase tracking-wider">Home Interface</span>
+          <span class="text-xs font-orbitron font-bold text-cyber-cyan uppercase tracking-wider">Home Interface</span>
         </div>
       </div>
 
       <!-- 2. Realtime Sync -->
-      <div class="glass-card rounded-2xl p-3 space-y-3 group">
-        <div class="rounded-xl overflow-hidden border border-cyber-cyan/20 bg-cyber-navy/80 aspect-[9/19] flex items-center justify-center">
+      <div class="glass-card cyber-card-cut rounded-2xl p-3 space-y-3 group">
+        <div class="rounded-xl overflow-hidden border border-cyber-cyan/30 bg-cyber-navy/90 aspect-[9/19] flex items-center justify-center">
           <img src="https://i.ibb.co/FbqhXHvZ/IMG-20261010-173321.jpg" alt="Realtime Sync" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" loading="lazy" />
         </div>
         <div class="px-2 pb-1 text-center">
-          <span class="text-xs font-mono font-semibold text-cyber-cyan uppercase tracking-wider">Realtime Sync</span>
+          <span class="text-xs font-orbitron font-bold text-cyber-cyan uppercase tracking-wider">Realtime Sync</span>
         </div>
       </div>
 
       <!-- 3. FTP File Manager -->
-      <div class="glass-card rounded-2xl p-3 space-y-3 group">
-        <div class="rounded-xl overflow-hidden border border-cyber-cyan/20 bg-cyber-navy/80 aspect-[9/19] flex items-center justify-center">
+      <div class="glass-card cyber-card-cut rounded-2xl p-3 space-y-3 group">
+        <div class="rounded-xl overflow-hidden border border-cyber-cyan/30 bg-cyber-navy/90 aspect-[9/19] flex items-center justify-center">
           <img src="https://i.ibb.co/BHJ4PFPq/IMG-20261010-173338.jpg" alt="FTP File Manager" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" loading="lazy" />
         </div>
         <div class="px-2 pb-1 text-center">
-          <span class="text-xs font-mono font-semibold text-cyber-cyan uppercase tracking-wider">FTP File Manager</span>
+          <span class="text-xs font-orbitron font-bold text-cyber-cyan uppercase tracking-wider">FTP File Manager</span>
         </div>
       </div>
 
       <!-- 4. Local File Manager -->
-      <div class="glass-card rounded-2xl p-3 space-y-3 group">
-        <div class="rounded-xl overflow-hidden border border-cyber-cyan/20 bg-cyber-navy/80 aspect-[9/19] flex items-center justify-center">
+      <div class="glass-card cyber-card-cut rounded-2xl p-3 space-y-3 group">
+        <div class="rounded-xl overflow-hidden border border-cyber-cyan/30 bg-cyber-navy/90 aspect-[9/19] flex items-center justify-center">
           <img src="https://i.ibb.co/RGn2N9f8/IMG-20261010-172925.jpg" alt="Local File Manager" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" loading="lazy" />
         </div>
         <div class="px-2 pb-1 text-center">
-          <span class="text-xs font-mono font-semibold text-cyber-cyan uppercase tracking-wider">Local File Manager</span>
+          <span class="text-xs font-orbitron font-bold text-cyber-cyan uppercase tracking-wider">Local File Manager</span>
         </div>
       </div>
 
     </div>
   </section>
 
-
   <!-- Download & CTA Section -->
   <section id="downloads" class="max-w-7xl mx-auto px-6 py-24 text-center">
     <div class="max-w-3xl mx-auto space-y-6">
-      <h3 class="text-3xl sm:text-5xl font-extrabold text-white">Ready for Seamless Transfers?</h3>
-      <p class="text-gray-400 text-base">
+      <h3 class="font-orbitron text-3xl sm:text-5xl font-black text-white uppercase tracking-tight">Ready for Seamless Transfers?</h3>
+      <p class="text-gray-300 text-base">
         Download the latest APK release directly, or inspect and clone the source code on GitHub.
       </p>
 
       <div class="flex flex-wrap justify-center gap-4 pt-4">
-        <a href="https://github.com/aynabyayush/ftp-app/releases/latest" class="px-8 py-4 rounded-xl bg-cyber-cyan text-cyber-black font-bold flex items-center space-x-3 cyber-glow-cyan hover:bg-cyber-cyanDim transition-all">
+        <a href="https://github.com/aynabyayush/ftp-app/releases/latest" class="px-8 py-4 rounded-xl bg-cyber-cyan text-cyber-black font-orbitron font-extrabold text-sm uppercase tracking-wider flex items-center space-x-3 cyber-glow-cyan hover:bg-cyber-cyanDim hover:scale-[1.02] transition-all">
           <i data-lucide="download" class="w-5 h-5"></i>
           <span>Download v1.0 APK</span>
         </a>
@@ -504,14 +537,14 @@
   </section>
 
   <!-- Footer -->
-  <footer class="border-t border-gray-900 bg-cyber-black/90 py-12">
+  <footer class="border-t border-gray-900 bg-cyber-black/95 py-12">
     <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-gray-500 font-mono">
       <div class="flex items-center space-x-2">
-        <span>FTPApp &copy; 2026</span>
+        <span class="font-orbitron text-gray-400">FTPApp &copy; 2026</span>
         <span>&bull;</span>
         <span>Built with ❤️ by AYUSH NARAYAN</span>
       </div>
-      <div class="flex items-center space-x-6">
+      <div class="flex items-center space-x-6 font-orbitron text-[11px] uppercase tracking-wider">
         <a href="https://github.com/aynabyayush/ftp-app" class="hover:text-cyber-cyan transition-colors">GitHub</a>
         <a href="https://github.com/aynabyayush/ftp-app/blob/main/LICENSE" class="hover:text-cyber-cyan transition-colors">MIT License</a>
         <a href="https://github.com/aynabyayush/ftp-app/releases" class="hover:text-cyber-cyan transition-colors">Releases</a>
@@ -533,7 +566,7 @@
 
       if (isServerRunning) {
         badge.innerText = 'OFFLINE';
-        badge.className = 'px-2.5 py-0.5 rounded text-[11px] font-mono font-semibold bg-gray-800 text-gray-400 border border-gray-700';
+        badge.className = 'px-2.5 py-0.5 rounded text-[11px] font-orbitron font-bold tracking-wider bg-gray-800 text-gray-400 border border-gray-700';
         uri.innerText = 'Server Inactive';
         uri.className = 'text-gray-500 font-mono text-base font-bold tracking-wide';
         speed.innerText = '0.0 MB/s';
@@ -542,7 +575,7 @@
         isServerRunning = false;
       } else {
         badge.innerText = 'ONLINE';
-        badge.className = 'px-2.5 py-0.5 rounded text-[11px] font-mono font-semibold bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30';
+        badge.className = 'px-2.5 py-0.5 rounded text-[11px] font-orbitron font-bold tracking-wider bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/40 shadow-[0_0_10px_rgba(0,240,255,0.25)]';
         uri.innerText = 'ftp://192.168.1.104:2121';
         uri.className = 'text-cyber-cyan font-mono text-base font-bold tracking-wide';
         speed.innerText = '18.4 MB/s';
