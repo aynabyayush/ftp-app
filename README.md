@@ -90,10 +90,10 @@ Turn your Android phone into an FTP server to access mobile storage from PCs, Ma
 2. **Downloading Files from Server**:
    * Tap on any file in the explorer to download the file.
    * Choose your local target directory (configured under settings or selected on-the-fly).
-   * If a file with the same name already exists locally, an overwrite prompt will appear asking to **Overwrite**, **Skip**, or **Cancel**.
+   * If a file with the same name already exists locally, an overwrite prompt will appear asking to **Overwrite** or **Skip**.
 3. **Uploading Files to Server**:
    * Navigate to your desired remote folder.
-   * Tap the **Upload** button (`+` or upload icon) in the bottom navigation.
+   * Tap the **Upload file to this folder** button in the bottom navigation.
    * The local storage picker will open. Select your target local file to initiate the upload.
 
 ---
@@ -108,7 +108,7 @@ Turn your Android phone into an FTP server to access mobile storage from PCs, Ma
      * Transferred bytes vs. Total file size.
      * Progress bar with estimated remaining bytes.
 2. **Transfer Cancellation**:
-   * Tap the red **Cancel** button next to any running item to abort the socket stream immediately without corrupting local index tables.
+   * Tap the red **Cancel Transfer** button next to any running item to abort the socket stream immediately without corrupting local index tables.
 3. **Completed Sessions**:
    * Review all files downloaded or uploaded during the current session under the **Completed Transfers** sub-tab.
 
