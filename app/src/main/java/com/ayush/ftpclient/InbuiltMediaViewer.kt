@@ -2,6 +2,7 @@ package com.ayush.ftpclient
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Environment
 import android.os.Handler
@@ -57,25 +58,56 @@ object InbuiltMediaViewer {
     }
 
     fun showImageViewer(activity: Activity, file: File) {
+        if (file.length() > 30 * 1024 * 1024L) {
+            Toast.makeText(activity, "Image file too large for preview (${HistoryManager.formatFileSize(file.length())}). Opening externally...", Toast.LENGTH_SHORT).show()
+            HistoryManager.openFile(
+                activity,
+                HistoryItem("SENT", file.name, HistoryManager.formatFileSize(file.length()), "Local File", "", file.absolutePath)
+            )
+            return
+        }
+
         val dialogView = activity.layoutInflater.inflate(R.layout.dialog_image_viewer, null)
         val tvTitle = dialogView.findViewById<TextView>(R.id.tvImageTitle)
         val tvDetails = dialogView.findViewById<TextView>(R.id.tvImageDetails)
         val ivImage = dialogView.findViewById<ImageView>(R.id.ivInbuiltImage)
         val btnClose = dialogView.findViewById<ImageButton>(R.id.btnCloseImageViewer)
-        val btnShare = dialogView.findViewById<Button>(R.id.btnShareImage)
+        val btnShare = dialogView.findViewById<View>(R.id.btnShareImage)
 
         tvTitle.text = file.name
 
         try {
-            val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+            val boundsOptions = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeFile(file.absolutePath, boundsOptions)
+            val origWidth = boundsOptions.outWidth
+            val origHeight = boundsOptions.outHeight
+
+            var sampleSize = 1
+            val reqWidth = 1080
+            val reqHeight = 1920
+            if (origHeight > reqHeight || origWidth > reqWidth) {
+                val halfHeight = origHeight / 2
+                val halfWidth = origWidth / 2
+                while (halfHeight / sampleSize >= reqHeight && halfWidth / sampleSize >= reqWidth) {
+                    sampleSize *= 2
+                }
+            }
+
+            val decodeOptions = BitmapFactory.Options().apply {
+                inSampleSize = sampleSize
+            }
+            val bitmap = BitmapFactory.decodeFile(file.absolutePath, decodeOptions)
+
             if (bitmap != null) {
                 ivImage.setImageBitmap(bitmap)
                 val fileSize = HistoryManager.formatFileSize(file.length())
-                tvDetails.text = "${bitmap.width} x ${bitmap.height} • $fileSize"
+                val w = if (origWidth > 0) origWidth else bitmap.width
+                val h = if (origHeight > 0) origHeight else bitmap.height
+                tvDetails.text = "$w x $h • $fileSize"
             } else {
                 tvDetails.text = HistoryManager.formatFileSize(file.length())
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             tvDetails.text = HistoryManager.formatFileSize(file.length())
         }
 

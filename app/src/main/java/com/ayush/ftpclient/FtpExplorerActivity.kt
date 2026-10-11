@@ -3,8 +3,10 @@ package com.ayush.ftpclient
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.os.Environment
+import android.os.PowerManager
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
@@ -23,8 +25,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ayush.ftpclient.databinding.ActivityFtpExplorerBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import org.apache.commons.net.ftp.FTP
@@ -35,10 +42,13 @@ import org.apache.commons.net.io.CopyStreamListener
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.net.InetSocketAddress
+import java.net.Socket
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.Queue
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class FtpLoginException(msg: String) : IOException(msg)
@@ -117,6 +127,9 @@ class FtpExplorerActivity : AppCompatActivity() {
 
         binding.tvServerAddress.text = "ftp://$host:$port"
 
+        acquireKeepAliveLocks()
+        startServerVitalCheck()
+
         setupRecyclerView()
 
         binding.btnMenu.setOnClickListener { binding.drawerLayout.openDrawer(GravityCompat.START) }
@@ -167,11 +180,14 @@ class FtpExplorerActivity : AppCompatActivity() {
                     }
                     loadDirectory(newPath)
                 } else {
-                    downloadFile(file)
+                    previewFtpFile(file)
                 }
             },
             onDownloadClick = { file ->
                 downloadFile(file)
+            },
+            onMoreClick = { file ->
+                showFtpItemOptionsDialog(file)
             }
         )
         binding.rvFileList.adapter = adapter
@@ -189,19 +205,127 @@ class FtpExplorerActivity : AppCompatActivity() {
         adapter.isGridView = isGridView
     }
 
-    private fun loadDirectory(path: String) {
-        binding.progressBar.visibility = View.VISIBLE
-        binding.tvEmptyState.visibility = View.GONE
+    private var wakeLock: PowerManager.WakeLock? = null
+    private var wifiLock: WifiManager.WifiLock? = null
 
+    @Suppress("DEPRECATION")
+    private fun acquireKeepAliveLocks() {
+        try {
+            val pm = getSystemService(POWER_SERVICE) as PowerManager
+            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "FTPApp::ExplorerWakeLock").apply {
+                acquire()
+            }
+
+            val wm = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+            wifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "FTPApp::ExplorerWifiLock").apply {
+                acquire()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private val directoryCache = ConcurrentHashMap<String, List<FTPFile>>()
+
+    private fun prefetchSubfolders(parentPath: String, subfolders: List<FTPFile>) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val client = getConnectedClient()
-                val files = client.listFiles(path) ?: emptyArray()
+                for (sub in subfolders.take(5)) {
+                    val subPath = if (parentPath.endsWith("/")) "$parentPath${sub.name}" else "$parentPath/${sub.name}"
+                    if (!directoryCache.containsKey(subPath)) {
+                        val subFiles = client.listFiles(subPath)?.filter { it.name != "." && it.name != ".." }
+                            ?.sortedWith(compareBy({ !it.isDirectory }, { it.name.lowercase() })) ?: emptyList()
+                        directoryCache[subPath] = subFiles
+                    }
+                }
+            } catch (_: Exception) {}
+        }
+    }
 
-                val sortedList = files.filter { it.name != "." && it.name != ".." }
-                    .sortedWith(compareBy({ !it.isDirectory }, { it.name.lowercase() }))
+    private val ftpMutex = Mutex()
 
-                currentPath = path
+    private var vitalCheckJob: Job? = null
+
+    private fun startServerVitalCheck() {
+        vitalCheckJob?.cancel()
+        vitalCheckJob = lifecycleScope.launch(Dispatchers.IO) {
+            var consecutiveFailures = 0
+            while (isActive) {
+                delay(4000)
+                var isAlive = false
+                try {
+                    val client = ftpClient
+                    if (client != null && client.isConnected) {
+                        isAlive = client.sendNoOp()
+                    } else {
+                        val cleanH = host.removePrefix("ftp://").removePrefix("http://").substringBefore(":").substringBefore("/").trim()
+                        val socket = Socket()
+                        socket.connect(InetSocketAddress(cleanH, port), 2000)
+                        isAlive = socket.isConnected
+                        socket.close()
+                    }
+                } catch (_: Exception) {
+                    isAlive = false
+                }
+
+                if (isAlive) {
+                    consecutiveFailures = 0
+                } else {
+                    consecutiveFailures++
+                }
+
+                if (consecutiveFailures >= 3 && isActive) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@FtpExplorerActivity, "🔴 FTP Server disconnected. Closing Explorer...", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+                    break
+                }
+            }
+        }
+    }
+
+    private fun loadDirectory(path: String) {
+        currentPath = path
+        binding.tvCurrentPath.text = currentPath
+
+        val cachedFiles = directoryCache[path]
+        if (!cachedFiles.isNullOrEmpty()) {
+            binding.progressBar.visibility = View.GONE
+            adapter.submitList(cachedFiles)
+            binding.tvEmptyState.visibility = View.GONE
+        } else {
+            binding.progressBar.visibility = View.VISIBLE
+            binding.tvEmptyState.visibility = View.GONE
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val sortedList = ftpMutex.withLock {
+                    var client = getConnectedClient()
+
+                    var rawFiles: Array<FTPFile>? = null
+                    try {
+                        client.changeWorkingDirectory(path)
+                        rawFiles = client.listFiles()
+                        if (rawFiles == null || rawFiles.isEmpty()) {
+                            rawFiles = client.listFiles(path)
+                        }
+                    } catch (_: Exception) {
+                        ftpClient = null
+                        client = getConnectedClient()
+                        client.changeWorkingDirectory(path)
+                        rawFiles = client.listFiles() ?: client.listFiles(path)
+                    }
+
+                    val files = rawFiles ?: emptyArray()
+
+                    files.filter { it.name != "." && it.name != ".." }
+                        .sortedWith(compareBy({ !it.isDirectory }, { it.name.lowercase() }))
+                }
+
+                directoryCache[path] = sortedList
 
                 withContext(Dispatchers.Main) {
                     binding.progressBar.visibility = View.GONE
@@ -214,6 +338,8 @@ class FtpExplorerActivity : AppCompatActivity() {
                         binding.tvEmptyState.visibility = View.GONE
                     }
                 }
+
+                prefetchSubfolders(path, sortedList.filter { it.isDirectory })
             } catch (e: FtpLoginException) {
                 withContext(Dispatchers.Main) {
                     binding.progressBar.visibility = View.GONE
@@ -582,7 +708,13 @@ class FtpExplorerActivity : AppCompatActivity() {
                 try {
                     client.connect(host, p)
                     if (client.isConnected) {
-                        client.soTimeout = 7000
+                        client.connectTimeout = 15000
+                        client.defaultTimeout = 60000
+                        client.soTimeout = 60000
+                        client.setDataTimeout(60000)
+                        client.bufferSize = 1024 * 1024
+                        client.keepAlive = true
+                        client.controlKeepAliveTimeout = 60
                         port = p
                         connected = true
                         break
@@ -998,6 +1130,295 @@ class FtpExplorerActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    private fun previewFtpFile(file: FTPFile) {
+        val testFile = File(file.name)
+        if (!InbuiltMediaViewer.isImage(testFile)) {
+            val dialogView = layoutInflater.inflate(R.layout.dialog_confirm_delete, null)
+            val tvMsg = dialogView.findViewById<TextView>(R.id.tvConfirmDeleteMsg)
+            val btnCancel = dialogView.findViewById<Button>(R.id.btnCancelDelete)
+            val btnConfirm = dialogView.findViewById<Button>(R.id.btnConfirmDelete)
+
+            tvMsg.text = "File '${file.name}' can't be previewed. Do you want to download it permanently instead?"
+            btnConfirm.text = "DOWNLOAD"
+            btnCancel.text = "CANCEL"
+
+            val dialog = AlertDialog.Builder(this, com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog)
+                .setView(dialogView)
+                .create()
+
+            DialogUtils.applyGlassBlur(dialog)
+
+            btnConfirm.setOnClickListener {
+                dialog.dismiss()
+                downloadFile(file)
+            }
+
+            btnCancel.setOnClickListener { dialog.dismiss() }
+            dialog.show()
+            return
+        }
+
+        val prefs = getSharedPreferences("FTP_SETTINGS", MODE_PRIVATE)
+        val maxPreviewMb = prefs.getInt("PREF_MAX_PREVIEW_MB", 20)
+        val maxPreviewBytes = maxPreviewMb * 1024 * 1024L
+        val usableSpace = cacheDir.usableSpace
+
+        if (file.size > maxPreviewBytes || usableSpace < file.size) {
+            val dialogView = layoutInflater.inflate(R.layout.dialog_confirm_delete, null)
+            val tvMsg = dialogView.findViewById<TextView>(R.id.tvConfirmDeleteMsg)
+            val btnCancel = dialogView.findViewById<Button>(R.id.btnCancelDelete)
+            val btnConfirm = dialogView.findViewById<Button>(R.id.btnConfirmDelete)
+
+            val reason = if (file.size > maxPreviewBytes) {
+                "File size (${HistoryManager.formatFileSize(file.size)}) exceeds maximum preview limit ($maxPreviewMb MB)."
+            } else {
+                "Insufficient local cache storage to preview this file."
+            }
+
+            tvMsg.text = "$reason Do you want to download it permanently instead?"
+            btnConfirm.text = "DOWNLOAD"
+            btnCancel.text = "CANCEL"
+
+            val dialog = AlertDialog.Builder(this, com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog)
+                .setView(dialogView)
+                .create()
+
+            DialogUtils.applyGlassBlur(dialog)
+
+            btnConfirm.setOnClickListener {
+                dialog.dismiss()
+                downloadFile(file)
+            }
+
+            btnCancel.setOnClickListener { dialog.dismiss() }
+            dialog.show()
+            return
+        }
+
+        Toast.makeText(this, "Loading preview for ${file.name}...", Toast.LENGTH_SHORT).show()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val client = getConnectedClient()
+                client.setFileType(FTP.BINARY_FILE_TYPE)
+                try { client.changeWorkingDirectory(currentPath) } catch (_: Exception) {}
+
+                val previewDir = File(cacheDir, "ftp_preview_cache")
+                if (!previewDir.exists()) previewDir.mkdirs()
+
+                val previewFile = File(previewDir, file.name)
+
+                val outputStream = FileOutputStream(previewFile)
+                val success = client.retrieveFile(file.name, outputStream)
+                outputStream.flush()
+                outputStream.close()
+
+                withContext(Dispatchers.Main) {
+                    if (success && previewFile.exists() && previewFile.length() > 0) {
+                        InbuiltMediaViewer.showImageViewer(this@FtpExplorerActivity, previewFile)
+                    } else {
+                        Toast.makeText(this@FtpExplorerActivity, "Preview failed to load", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@FtpExplorerActivity, "Preview error: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun showFtpItemOptionsDialog(file: FTPFile) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_ftp_item_options, null)
+        val tvTitle = dialogView.findViewById<TextView>(R.id.tvFtpItemTitle)
+        val optRename = dialogView.findViewById<View>(R.id.optFtpRename)
+        val optDownload = dialogView.findViewById<View>(R.id.optFtpDownload)
+        val optDelete = dialogView.findViewById<View>(R.id.optFtpDelete)
+        val btnClose = dialogView.findViewById<Button>(R.id.btnCloseFtpItemOptions)
+
+        tvTitle.text = file.name
+
+        val dialog = AlertDialog.Builder(this, com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog)
+            .setView(dialogView)
+            .create()
+
+        DialogUtils.applyGlassBlur(dialog)
+
+        optRename.setOnClickListener {
+            dialog.dismiss()
+            showRemoteRenameDialog(file)
+        }
+
+        optDownload.setOnClickListener {
+            dialog.dismiss()
+            if (file.isDirectory) {
+                downloadRemoteFolder(file)
+            } else {
+                downloadFile(file)
+            }
+        }
+
+        optDelete.setOnClickListener {
+            dialog.dismiss()
+            confirmRemoteDelete(file)
+        }
+
+        btnClose.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+    }
+
+    private fun downloadRemoteFolder(folder: FTPFile) {
+        val prefs = getSharedPreferences("FTP_SETTINGS", MODE_PRIVATE)
+        val defaultDownloadDir = "/storage/emulated/0/Download/FTPApp"
+        val downloadDirPath = prefs.getString("PREF_DOWNLOAD_DIR", defaultDownloadDir) ?: defaultDownloadDir
+        val targetLocalFolder = File(downloadDirPath, folder.name)
+        if (!targetLocalFolder.exists()) {
+            targetLocalFolder.mkdirs()
+        }
+
+        Toast.makeText(this, "Downloading folder '${folder.name}'...", Toast.LENGTH_SHORT).show()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val remoteFolderPath = if (currentPath.endsWith("/")) "$currentPath${folder.name}" else "$currentPath/${folder.name}"
+                downloadFolderContentsRecursively(remoteFolderPath, targetLocalFolder)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@FtpExplorerActivity, "Finished downloading '${folder.name}'", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@FtpExplorerActivity, "Folder download error: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun downloadFolderContentsRecursively(remoteDirPath: String, localTargetDir: File) {
+        val client = getConnectedClient()
+        val files = client.listFiles(remoteDirPath) ?: return
+
+        for (f in files) {
+            if (f.name == "." || f.name == "..") continue
+            val remoteChildPath = if (remoteDirPath.endsWith("/")) "$remoteDirPath${f.name}" else "$remoteDirPath/${f.name}"
+            val localChildFile = File(localTargetDir, f.name)
+
+            if (f.isDirectory) {
+                if (!localChildFile.exists()) localChildFile.mkdirs()
+                downloadFolderContentsRecursively(remoteChildPath, localChildFile)
+            } else {
+                if (!localTargetDir.exists()) localTargetDir.mkdirs()
+                val outputStream = FileOutputStream(localChildFile)
+                client.setFileType(FTP.BINARY_FILE_TYPE)
+                client.retrieveFile(remoteChildPath, outputStream)
+                outputStream.close()
+
+                val formattedSize = HistoryManager.formatFileSize(f.size)
+                HistoryManager.addRecord(
+                    context = applicationContext,
+                    type = HistoryManager.TYPE_RECEIVED,
+                    fileName = f.name,
+                    details = "Downloaded from $host",
+                    fileSize = formattedSize,
+                    localFilePath = localChildFile.absolutePath
+                )
+            }
+        }
+    }
+
+    private fun showRemoteRenameDialog(file: FTPFile) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_ftp_login, null)
+        val etNewName = dialogView.findViewById<EditText>(R.id.etDialogUser)
+        val etPass = dialogView.findViewById<EditText>(R.id.etDialogPass)
+        etPass.visibility = View.GONE
+
+        etNewName.hint = "New Name"
+        etNewName.setText(file.name)
+
+        AlertDialog.Builder(this, com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog)
+            .setTitle("✏ Remote Rename")
+            .setView(dialogView)
+            .setPositiveButton("RENAME") { d, _ ->
+                val newName = etNewName.text.toString().trim()
+                if (newName.isNotEmpty() && newName != file.name) {
+                    performRemoteRename(file, newName)
+                }
+                d.dismiss()
+            }
+            .setNegativeButton("CANCEL") { d, _ -> d.dismiss() }
+            .show()
+    }
+
+    private fun performRemoteRename(file: FTPFile, newName: String) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val client = getConnectedClient()
+                val oldPath = if (currentPath.endsWith("/")) "$currentPath${file.name}" else "$currentPath/${file.name}"
+                val newPath = if (currentPath.endsWith("/")) "$currentPath$newName" else "$currentPath/$newName"
+
+                val success = client.rename(oldPath, newPath)
+                withContext(Dispatchers.Main) {
+                    if (success) {
+                        Toast.makeText(this@FtpExplorerActivity, "Renamed to $newName", Toast.LENGTH_SHORT).show()
+                        loadDirectory(currentPath)
+                    } else {
+                        Toast.makeText(this@FtpExplorerActivity, "Rename failed", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@FtpExplorerActivity, "Rename error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun confirmRemoteDelete(file: FTPFile) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_confirm_delete, null)
+        val tvMsg = dialogView.findViewById<TextView>(R.id.tvConfirmDeleteMsg)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancelDelete)
+        val btnConfirm = dialogView.findViewById<Button>(R.id.btnConfirmDelete)
+
+        tvMsg.text = "Are you sure you want to delete '${file.name}' from the remote FTP server?"
+
+        val dialog = AlertDialog.Builder(this, com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog)
+            .setView(dialogView)
+            .create()
+
+        DialogUtils.applyGlassBlur(dialog)
+
+        btnCancel.setOnClickListener { dialog.dismiss() }
+
+        btnConfirm.setOnClickListener {
+            dialog.dismiss()
+            performRemoteDelete(file)
+        }
+
+        dialog.show()
+    }
+
+    private fun performRemoteDelete(file: FTPFile) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val client = getConnectedClient()
+                val remotePath = if (currentPath.endsWith("/")) "$currentPath${file.name}" else "$currentPath/${file.name}"
+
+                val success = if (file.isDirectory) client.removeDirectory(remotePath) else client.deleteFile(remotePath)
+                withContext(Dispatchers.Main) {
+                    if (success) {
+                        Toast.makeText(this@FtpExplorerActivity, "Deleted ${file.name}", Toast.LENGTH_SHORT).show()
+                        loadDirectory(currentPath)
+                    } else {
+                        Toast.makeText(this@FtpExplorerActivity, "Delete failed", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@FtpExplorerActivity, "Delete error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     private fun navigateUp() {
         if (currentPath == "/" || currentPath.isEmpty()) {
             finish()
@@ -1008,8 +1429,39 @@ class FtpExplorerActivity : AppCompatActivity() {
         }
     }
 
+    private fun syncRemoteFolderRecursively(folder: FTPFile) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val client = getConnectedClient()
+                val folderPath = if (currentPath.endsWith("/")) "$currentPath${folder.name}" else "$currentPath/${folder.name}"
+                val files = client.listFiles(folderPath) ?: emptyArray()
+
+                for (f in files) {
+                    if (f.isFile) {
+                        downloadFile(f)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun clearPreviewCache() {
+        try {
+            val previewDir = File(cacheDir, "ftp_preview_cache")
+            if (previewDir.exists()) {
+                previewDir.deleteRecursively()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+        vitalCheckJob?.cancel()
+        clearPreviewCache()
         sessionCompletedTransfers.clear()
         downloadQueue.clear()
         lifecycleScope.launch(Dispatchers.IO) {

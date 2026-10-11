@@ -3,5 +3,9 @@
     <style name="Theme.FTPApp" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="colorPrimary">@color/neon_orange</item>
+        <item name="colorSecondary">@color/neon_blue</item>
+        <item name="android:statusBarColor">@color/cyber_bg_start</item>
+        <item name="android:navigationBarColor">@color/cyber_bg_end</item>
     </style>
 </resources>

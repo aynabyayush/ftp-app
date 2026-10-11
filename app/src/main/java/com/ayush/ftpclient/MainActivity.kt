@@ -382,6 +382,8 @@ class MainActivity : AppCompatActivity() {
                     currentLocalDir = clickedFile
                     previousItemsSignature = ""
                     updateLocalList()
+                } else if (InbuiltMediaViewer.isImage(clickedFile)) {
+                    InbuiltMediaViewer.showImageViewer(this, clickedFile)
                 } else {
                     HistoryManager.openFile(
                         this,
@@ -414,39 +416,59 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        var isScanningLocal = false
+
         updateLocalList = {
-            tvPath.text = currentLocalDir.absolutePath
-            updateLayoutManager()
-            localAdapter.selectedDetailModes.clear()
-            localAdapter.selectedDetailModes.addAll(selectedTileDetailModes)
+            if (!isScanningLocal) {
+                isScanningLocal = true
+                val dirToScan = currentLocalDir
+                val showHidden = showHiddenLocalFiles
+                val sortMode = currentLocalSortMode
+                val tileDetails = selectedTileDetailModes.toSet()
 
-            var items = currentLocalDir.listFiles { file ->
-                if (showHiddenLocalFiles) true else !file.isHidden
-            }?.toList() ?: emptyList()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        var rawFiles = dirToScan.listFiles { file ->
+                            if (showHidden) true else !file.isHidden
+                        }?.toList() ?: emptyList()
 
-            items = when (currentLocalSortMode) {
-                LocalSortMode.NAME -> items.sortedWith(compareBy({ !it.isDirectory }, { it.name.lowercase() }))
-                LocalSortMode.SIZE -> items.sortedWith(compareBy({ !it.isDirectory }, { -it.length() }))
-                LocalSortMode.DATE -> items.sortedWith(compareBy({ !it.isDirectory }, { -it.lastModified() }))
-            }
+                        rawFiles = when (sortMode) {
+                            LocalSortMode.NAME -> rawFiles.sortedWith(compareBy({ !it.isDirectory }, { it.name.lowercase() }))
+                            LocalSortMode.SIZE -> rawFiles.sortedWith(compareBy({ !it.isDirectory }, { -it.length() }))
+                            LocalSortMode.DATE -> rawFiles.sortedWith(compareBy({ !it.isDirectory }, { -it.lastModified() }))
+                        }
 
-            val newSignature = items.joinToString(";") { "${it.name}_${it.length()}_${it.lastModified()}" }
+                        val quickSignature = "${dirToScan.absolutePath}_${rawFiles.size}_${if (rawFiles.isNotEmpty()) rawFiles.first().lastModified() else 0}"
 
-            if (newSignature != previousItemsSignature) {
-                previousItemsSignature = newSignature
-                val layoutState = rvLocal.layoutManager?.onSaveInstanceState()
-                localAdapter.submitList(items)
-                if (layoutState != null) {
-                    rvLocal.layoutManager?.onRestoreInstanceState(layoutState)
+                        withContext(Dispatchers.Main) {
+                            tvPath.text = dirToScan.absolutePath
+                            updateLayoutManager()
+                            localAdapter.selectedDetailModes.clear()
+                            localAdapter.selectedDetailModes.addAll(tileDetails)
+
+                            if (quickSignature != previousItemsSignature) {
+                                previousItemsSignature = quickSignature
+                                val layoutState = rvLocal.layoutManager?.onSaveInstanceState()
+                                localAdapter.submitList(rawFiles)
+                                if (layoutState != null) {
+                                    rvLocal.layoutManager?.onRestoreInstanceState(layoutState)
+                                }
+                            }
+
+                            if (rawFiles.isEmpty()) {
+                                tvEmpty.visibility = View.VISIBLE
+                                rvLocal.visibility = View.GONE
+                            } else {
+                                tvEmpty.visibility = View.GONE
+                                rvLocal.visibility = View.VISIBLE
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    } finally {
+                        isScanningLocal = false
+                    }
                 }
-            }
-
-            if (items.isEmpty()) {
-                tvEmpty.visibility = View.VISIBLE
-                rvLocal.visibility = View.GONE
-            } else {
-                tvEmpty.visibility = View.GONE
-                rvLocal.visibility = View.VISIBLE
             }
         }
 
@@ -890,11 +912,11 @@ class MainActivity : AppCompatActivity() {
         btnCancel.setOnClickListener { dialog.dismiss() }
 
         btnConfirm.setOnClickListener {
-            if (file.exists() && file.delete()) {
+            if (file.exists() && file.deleteRecursively()) {
                 Toast.makeText(this, "Deleted ${file.name}", Toast.LENGTH_SHORT).show()
                 onDeleted()
             } else {
-                Toast.makeText(this, "Failed to delete file", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Failed to delete ${file.name}", Toast.LENGTH_SHORT).show()
             }
             dialog.dismiss()
         }
@@ -1302,6 +1324,8 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("FTP_SETTINGS", MODE_PRIVATE)
         val dialogView = layoutInflater.inflate(R.layout.dialog_settings, null)
 
+        val spnTheme = dialogView.findViewById<Spinner>(R.id.spnSettingsTheme)
+        val etMaxPreview = dialogView.findViewById<EditText>(R.id.etSettingsMaxPreviewMb)
         val etPort = dialogView.findViewById<EditText>(R.id.etSettingsPort)
         val etDir = dialogView.findViewById<EditText>(R.id.etSettingsDir)
         val etDownloadDir = dialogView.findViewById<EditText>(R.id.etSettingsDownloadDir)
@@ -1313,8 +1337,17 @@ class MainActivity : AppCompatActivity() {
         val btnCancel = dialogView.findViewById<Button>(R.id.btnCancelSettings)
         val btnSave = dialogView.findViewById<Button>(R.id.btnSaveSettings)
 
+        val themesList = AppTheme.entries.map { it.displayName }
+        val themeSpinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, themesList)
+        spnTheme.adapter = themeSpinnerAdapter
+
+        val savedTheme = ThemeManager.getSavedTheme(this)
+        val currentThemeIndex = AppTheme.entries.indexOf(savedTheme).coerceAtLeast(0)
+        spnTheme.setSelection(currentThemeIndex)
+
         val defaultDownloadDir = "/storage/emulated/0/Download/FTPApp"
 
+        etMaxPreview.setText(prefs.getInt("PREF_MAX_PREVIEW_MB", 20).toString())
         etPort.setText(prefs.getInt("PREF_PORT", 2221).toString())
         etDir.setText(prefs.getString("PREF_DIR", "/storage/emulated/0"))
         etDownloadDir.setText(prefs.getString("PREF_DOWNLOAD_DIR", defaultDownloadDir))
@@ -1350,6 +1383,11 @@ class MainActivity : AppCompatActivity() {
         btnCancel.setOnClickListener { dialog.dismiss() }
 
         btnSave.setOnClickListener {
+            val selectedTheme = AppTheme.entries[spnTheme.selectedItemPosition]
+            ThemeManager.saveTheme(this, selectedTheme)
+            applyCurrentTheme()
+
+            val newMaxPreview = etMaxPreview.text.toString().toIntOrNull() ?: 20
             val newPort = etPort.text.toString().toIntOrNull() ?: 2221
             val newDir = etDir.text.toString().trim().ifEmpty { "/storage/emulated/0" }
             val newDownloadDir = etDownloadDir.text.toString().trim().ifEmpty { defaultDownloadDir }
@@ -1357,6 +1395,7 @@ class MainActivity : AppCompatActivity() {
             val newPassive = etPassive.text.toString().trim().ifEmpty { "50000-50100" }
 
             prefs.edit()
+                .putInt("PREF_MAX_PREVIEW_MB", newMaxPreview)
                 .putInt("PREF_PORT", newPort)
                 .putString("PREF_DIR", newDir)
                 .putString("PREF_DOWNLOAD_DIR", newDownloadDir)

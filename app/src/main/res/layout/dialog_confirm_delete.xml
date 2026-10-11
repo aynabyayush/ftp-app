@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.08"
-            android:text="DELETETION ! !"
+            android:text="WARNING ! !"
             android:textColor="#FF007F"
             android:textSize="18sp"
             android:textStyle="bold" />

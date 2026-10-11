@@ -3,6 +3,7 @@ package com.ayush.ftpclient
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import org.json.JSONArray
@@ -114,14 +115,19 @@ object HistoryManager {
                 "${context.packageName}.fileprovider",
                 file
             )
-            val mimeType = context.contentResolver.getType(uri) ?: "*/*"
+            val extension = file.extension.lowercase(Locale.getDefault())
+            var mimeType = context.contentResolver.getType(uri)
+            if (mimeType == null || mimeType == "*/*") {
+                mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "*/*"
+            }
+
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(uri, mimeType)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             context.startActivity(Intent.createChooser(intent, "Open File"))
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Toast.makeText(context, "Cannot open file: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }

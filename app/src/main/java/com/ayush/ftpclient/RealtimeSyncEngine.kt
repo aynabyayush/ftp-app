@@ -8,8 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
-import org.apache.commons.net.io.CopyStreamEvent
-import org.apache.commons.net.io.CopyStreamListener
 import java.io.File
 import java.util.Locale
 
@@ -56,7 +54,7 @@ object RealtimeSyncEngine {
                     val localDir = File(profile.localFolderPath)
                     if (!localDir.exists() || !localDir.isDirectory) continue
 
-                    val localFiles = localDir.listFiles { f -> f.isFile && !f.isHidden } ?: continue
+                    val localFiles = localDir.listFiles { f -> !f.isHidden } ?: continue
                     if (localFiles.isEmpty()) continue
 
                     syncLocalFolderToServer(context, server, profile, localFiles)
@@ -82,36 +80,8 @@ object RealtimeSyncEngine {
         var client: FTPClient? = null
         try {
             client = FTPClient().apply {
-                connectTimeout = 3000
-                defaultTimeout = 3000
-            }
-
-            var lastTimeMs = System.currentTimeMillis()
-            var lastBytes = 0L
-
-            client.copyStreamListener = object : CopyStreamListener {
-                override fun bytesTransferred(event: CopyStreamEvent?) {}
-
-                override fun bytesTransferred(totalBytesTransferred: Long, bytesTransferred: Int, streamSize: Long) {
-                    val now = System.currentTimeMillis()
-                    val deltaMs = now - lastTimeMs
-
-                    if (deltaMs >= 200) {
-                        val deltaBytes = totalBytesTransferred - lastBytes
-                        val bytesPerSec = (deltaBytes * 1000.0) / deltaMs
-                        val mbPerSec = bytesPerSec / (1024.0 * 1024.0)
-
-                        currentSpeedText = if (mbPerSec >= 1.0) {
-                            String.format(Locale.US, "%.1f MB/s", mbPerSec)
-                        } else {
-                            val kbPerSec = bytesPerSec / 1024.0
-                            String.format(Locale.US, "%.0f KB/s", kbPerSec)
-                        }
-
-                        lastTimeMs = now
-                        lastBytes = totalBytesTransferred
-                    }
-                }
+                connectTimeout = 4000
+                defaultTimeout = 4000
             }
 
             val host = cleanHost(server.host)
@@ -129,55 +99,74 @@ object RealtimeSyncEngine {
             client.enterLocalPassiveMode()
             client.setFileType(FTP.BINARY_FILE_TYPE)
 
-            val remotePath = profile.remoteFolderPath.ifEmpty { "/" }
+            val baseRemotePath = profile.remoteFolderPath.ifEmpty { "/" }
+
+            syncDirectoryRecursively(context, client, server, File(profile.localFolderPath), baseRemotePath)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            try { client?.disconnect() } catch (_: Exception) {}
+        }
+    }
+
+    private fun syncDirectoryRecursively(
+        context: Context,
+        client: FTPClient,
+        server: SavedFtpServer,
+        localDir: File,
+        remotePath: String
+    ) {
+        if (!localDir.exists() || !localDir.isDirectory) return
+
+        try {
             client.changeWorkingDirectory(remotePath)
+        } catch (_: Exception) {
+            client.makeDirectory(remotePath)
+            client.changeWorkingDirectory(remotePath)
+        }
 
-            val remoteFiles = client.listFiles() ?: emptyArray()
-            val remoteFileNames = remoteFiles.map { it.name }.toSet()
+        val remoteFiles = client.listFiles() ?: emptyArray()
+        val remoteFileNames = remoteFiles.map { it.name }.toSet()
 
-            val filesToUpload = localFiles.filter { localFile ->
-                val cacheKey = "${server.id}_${localFile.name}_${localFile.length()}"
-                !remoteFileNames.contains(localFile.name) && !syncedFilesCache.contains(cacheKey)
-            }
+        val entries = localDir.listFiles { f -> !f.isHidden } ?: return
 
-            remainingBytesTotal = filesToUpload.sumOf { it.length() }
+        for (entry in entries) {
+            if (entry.isDirectory) {
+                val subRemotePath = if (remotePath.endsWith("/")) "$remotePath${entry.name}" else "$remotePath/${entry.name}"
+                syncDirectoryRecursively(context, client, server, entry, subRemotePath)
+            } else if (entry.isFile) {
+                val cacheKey = "${server.id}_${entry.absolutePath}_${entry.length()}_${entry.lastModified()}"
 
-            for (localFile in filesToUpload) {
-                val cacheKey = "${server.id}_${localFile.name}_${localFile.length()}"
+                if (remoteFileNames.contains(entry.name) || syncedFilesCache.contains(cacheKey)) {
+                    continue
+                }
 
-                lastTimeMs = System.currentTimeMillis()
-                lastBytes = 0L
-
-                val inputStream = localFile.inputStream()
-                val remoteTarget = if (remotePath.endsWith("/")) "$remotePath${localFile.name}" else "$remotePath/${localFile.name}"
+                val inputStream = entry.inputStream()
+                val remoteTarget = if (remotePath.endsWith("/")) "$remotePath${entry.name}" else "$remotePath/${entry.name}"
 
                 val success = client.storeFile(remoteTarget, inputStream)
                 inputStream.close()
 
                 if (success) {
                     syncedFilesCache.add(cacheKey)
-                    syncedBytesTotal += localFile.length()
-                    remainingBytesTotal = (remainingBytesTotal - localFile.length()).coerceAtLeast(0L)
+                    syncedBytesTotal += entry.length()
 
-                    val formattedSize = HistoryManager.formatFileSize(localFile.length())
+                    val formattedSize = HistoryManager.formatFileSize(entry.length())
                     HistoryManager.addRecord(
                         context = context,
                         type = HistoryManager.TYPE_SENT,
-                        fileName = localFile.name,
+                        fileName = entry.name,
                         details = "Auto-Synced to ${server.alias}",
                         fileSize = formattedSize,
-                        localFilePath = localFile.absolutePath
+                        localFilePath = entry.absolutePath
                     )
 
                     Handler(Looper.getMainLooper()).post {
-                        Toast.makeText(context, "⚡ Auto-Synced ${localFile.name} to ${server.alias}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "⚡ Auto-Synced ${entry.name} to ${server.alias}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            try { client?.disconnect() } catch (_: Exception) {}
         }
     }
 }

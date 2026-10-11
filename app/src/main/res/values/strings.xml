@@ -19,10 +19,12 @@
     <string name="history">History</string>
     <string name="settings">Settings</string>
     <string name="about">About</string>
-    <string name="about_version">Version 1.0 (Cyberpunk Edition)</string>
+    <string name="about_version">Version 1.1 (Cyberpunk Edition)</string>
     <string name="about_description">A next-generation, secure FTP Server &amp; Client suite with an inbuilt local file manager, multi-server auto-sync, real-time transfer monitoring, and persistent transfer history.</string>
     <string name="about_features_header">SYSTEM CAPABILITIES</string>
     <string name="about_features_list">• Multi-Threaded Apache FTP Server\n• Inbuilt Local File Manager &amp; SD Card Support\n• Real-Time Transfer &amp; Speed Monitoring\n• Automatic Multi-Server File Sync\n• Interactive Duplicate Prevention &amp; Persistent Logs</string>
+    <string name="changelog_header">📜 CHANGELOG (v1.1)</string>
+    <string name="changelog_list">• Fixed large directory listing &amp; socket timeout issues\n• Fixed local folder deletion &amp; FileProvider preview URIs\n• Added Inbuilt Local File Manager &amp; SD Card Access\n• Added Automated Realtime Sync Engine\n• Added Realtime Speed &amp; Progress Monitor\n• Added Custom Neon Color Theme Palettes\n• Added Interactive Overwrite &amp; Deletion Warnings</string>
     <string name="menu_cd">Menu</string>
     <string name="data_transfer_logs">DATA TRANSFER LOGS</string>
     <string name="inbuilt_system_history">[ INBUILT SYSTEM HISTORY ]</string>

@@ -93,6 +93,34 @@
                 android:layout_marginTop="6dp" />
         </LinearLayout>
 
+        <!-- CHANGELOG TILE -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/glass_input_bg"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/changelog_header"
+                android:textColor="#00FF66"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/changelog_list"
+                android:textColor="#E0F7FF"
+                android:textSize="12sp"
+                android:lineSpacingExtra="2dp"
+                android:layout_marginTop="6dp" />
+        </LinearLayout>
+
         <!-- CLOSE BUTTON -->
         <Button
             android:id="@+id/btnCloseAbout"

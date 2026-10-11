@@ -16,32 +16,50 @@ enum class AppTheme(
     val centerColor: Int,
     val endColor: Int
 ) {
-    DEFAULT(
-        "DEFAULT",
-        "Default",
+    NEON_ORANGE(
+        "NEON_ORANGE",
+        "Neon Orange & Blue",
+        Color.parseColor("#FF6600"),
+        Color.parseColor("#00F0FF"),
+        Color.parseColor("#1F0A00"),
+        Color.parseColor("#0D1526"),
+        Color.parseColor("#020813")
+    ),
+    NEON_CYBER(
+        "NEON_CYBER",
+        "Neon Matrix Green",
+        Color.parseColor("#00FF66"),
+        Color.parseColor("#00F0FF"),
+        Color.parseColor("#001F0A"),
+        Color.parseColor("#0B261A"),
+        Color.parseColor("#021308")
+    ),
+    NEON_SYNTH(
+        "NEON_SYNTH",
+        "Synthwave Magenta",
+        Color.parseColor("#FF007F"),
+        Color.parseColor("#9D00FF"),
+        Color.parseColor("#1A0026"),
+        Color.parseColor("#200833"),
+        Color.parseColor("#0C0214")
+    ),
+    NEON_AMBER(
+        "NEON_AMBER",
+        "Amber Firestorm",
+        Color.parseColor("#FFB703"),
+        Color.parseColor("#FF3D00"),
+        Color.parseColor("#261000"),
+        Color.parseColor("#331800"),
+        Color.parseColor("#140800")
+    ),
+    NEON_HOLOGRAM(
+        "NEON_HOLOGRAM",
+        "Cyan Hologram",
         Color.parseColor("#00F0FF"),
         Color.parseColor("#FF007F"),
-        Color.parseColor("#050811"),
-        Color.parseColor("#0B162C"),
-        Color.parseColor("#02040A")
-    ),
-    GLASS(
-        "GLASS",
-        "Glass Morphed",
-        Color.parseColor("#00E5FF"),
-        Color.parseColor("#9D00FF"),
-        Color.parseColor("#040914"),
-        Color.parseColor("#0E1D33"),
-        Color.parseColor("#060B18")
-    ),
-    MATERIAL_YOU(
-        "MATERIAL_YOU",
-        "Material You",
-        Color.parseColor("#D0BCFF"),
-        Color.parseColor("#A8C7FA"),
-        Color.parseColor("#141218"),
-        Color.parseColor("#211F26"),
-        Color.parseColor("#0F0D13")
+        Color.parseColor("#001A26"),
+        Color.parseColor("#052033"),
+        Color.parseColor("#010A14")
     )
 }
 
@@ -51,8 +69,8 @@ object ThemeManager {
 
     fun getSavedTheme(context: Context): AppTheme {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val savedId = prefs.getString(KEY_THEME, AppTheme.DEFAULT.id) ?: AppTheme.DEFAULT.id
-        return AppTheme.entries.firstOrNull { it.id == savedId } ?: AppTheme.DEFAULT
+        val savedId = prefs.getString(KEY_THEME, AppTheme.NEON_ORANGE.id) ?: AppTheme.NEON_ORANGE.id
+        return AppTheme.entries.firstOrNull { it.id == savedId } ?: AppTheme.NEON_ORANGE
     }
 
     fun saveTheme(context: Context, theme: AppTheme) {
@@ -76,6 +94,8 @@ object ThemeManager {
         binding.tvServerCardTitle.setTextColor(theme.primaryColor)
         binding.tvClientCardTitle.setTextColor(theme.primaryColor)
 
+        binding.btnMenu.imageTintList = ColorStateList.valueOf(theme.primaryColor)
+        binding.btnHomeSyncProgress.imageTintList = ColorStateList.valueOf(theme.primaryColor)
         binding.chkAnonymous.buttonTintList = ColorStateList.valueOf(theme.primaryColor)
 
         val primaryBtnDrawable = GradientDrawable(

@@ -29,6 +29,48 @@
 
         </LinearLayout>
 
+        <!-- THEME COLOR PALETTE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Theme Color Palette"
+            android:textColor="#00F0FF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spnSettingsTheme"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/glass_input_bg"
+            android:paddingHorizontal="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- MAX PREVIEW SIZE LIMIT -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Max FTP File Preview Limit (MB)"
+            android:textColor="#00F0FF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etSettingsMaxPreviewMb"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/glass_input_bg"
+            android:hint="20 (Max MB for FTP Previews)"
+            android:inputType="number"
+            android:autofillHints=""
+            android:textColor="#E0F7FF"
+            android:textColorHint="#6600F0FF"
+            android:paddingHorizontal="16dp"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
+
         <!-- SERVER PORT -->
         <TextView
             android:layout_width="wrap_content"

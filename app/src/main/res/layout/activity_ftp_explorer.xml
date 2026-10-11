@@ -65,7 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="FTP EXPLORER"
-                    android:textColor="#00F0FF"
+                    android:textColor="#FF6600"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.05" />
@@ -150,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="/"
-                android:textColor="#00F0FF"
+                android:textColor="#FF6600"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:ellipsize="start"

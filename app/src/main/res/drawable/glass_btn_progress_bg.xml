@@ -4,8 +4,8 @@
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="12dp" />
-            <solid android:color="#1A00F0FF" />
-            <stroke android:width="1dp" android:color="#4D00F0FF" />
+            <solid android:color="#1AFF6600" />
+            <stroke android:width="1dp" android:color="#4DFF6600" />
         </shape>
     </item>
 
@@ -16,7 +16,10 @@
             android:gravity="start">
             <shape android:shape="rectangle">
                 <corners android:radius="12dp" />
-                <solid android:color="#8000F0FF" />
+                <gradient
+                    android:startColor="#CCFF6600"
+                    android:endColor="#CC00F0FF"
+                    android:angle="0" />
             </shape>
         </clip>
     </item>
